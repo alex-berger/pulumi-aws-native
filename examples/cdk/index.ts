@@ -1,11 +1,3 @@
-import * as pulumi from "@pulumi/pulumi";
-import * as cdk from "aws-cdk-lib/lib/core";
-import { CdkComponent } from "./cdk-interop";
-import { CdkStackComponent, AwsPulumiAdapter } from "./cdk-interop-aspect";
-import { Construct } from "constructs";
-
-import * as cassandra from 'aws-cdk-lib/lib/aws-cassandra';
-
 // A basic example of deploying a CDK resource from Pulumi.
 // Note that we don't flow any inputs/outputs.
 // new CdkComponent("helloworld", stack => {
@@ -15,8 +7,11 @@ import * as cassandra from 'aws-cdk-lib/lib/aws-cassandra';
 // The full program isn't that nice because we need to figure out a way to create
 // dependencies across CDK resources and Pulumi components.
 import * as ecs from 'aws-cdk-lib/lib/aws-ecs';
+import * as iam from 'aws-cdk-lib/lib/aws-iam';
 import * as elasticloadbalancingv2 from 'aws-cdk-lib/lib/aws-elasticloadbalancingv2';
-
+import * as pulumi from "@pulumi/pulumi";
+import { CdkStackComponent, AwsPulumiAdapter } from "./cdk-interop-aspect";
+import { Construct } from "constructs";
 import * as aws from "@pulumi/aws";
 
 const defaultVpc = pulumi.output(aws.ec2.getVpc({ default: true }));
@@ -51,20 +46,6 @@ const atg = new aws.lb.TargetGroup("app-tg", {
     vpcId: defaultVpc.id,
 });
 
-const role = new aws.iam.Role("task-exec-role", {
-    assumeRolePolicy: {
-        Version: "2008-10-17",
-        Statement: [{
-            Sid: "",
-            Effect: "Allow",
-            Principal: {
-                Service: "ecs-tasks.amazonaws.com"
-            },
-            Action: "sts:AssumeRole",
-        }],
-    },
-});
-
 // const rpa = new aws.iam.RolePolicyAttachment("task-exec-policy", {
 // 	role: role.name,
 // 	policyArn: "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy",
@@ -73,14 +54,20 @@ const role = new aws.iam.Role("task-exec-role", {
 export const albArn = alb.arn;
 export const albDnsName = alb.dnsName;
 export const atgArn = atg.arn;
-export const roleArn = role.arn;
 export const subnetIds = defaultVpcSubnets.ids;
 export const securityGroupId = group.id;
 
-pulumi.all([albArn, atgArn, roleArn, subnetIds, securityGroupId]).apply(([albArn, atgArn, roleArn, subnetIds, securityGroupId]) => {
-    new CdkStackComponent("teststack", (scope: Construct) => {
-        const adapter = new AwsPulumiAdapter(scope, "adapter");
+pulumi.all([albArn, atgArn, subnetIds, securityGroupId]).apply(([albArn, atgArn, subnetIds, securityGroupId]) => {
+    new CdkStackComponent("teststack", (scope: Construct, parent: pulumi.ComponentResource) => {
+        const adapter = new AwsPulumiAdapter(scope, "adapter", parent);
+
         const cluster = new ecs.CfnCluster(adapter, "clusterstack");
+
+        const role = new iam.Role(adapter, "taskexecrole",
+            {
+                assumedBy: new iam.ServicePrincipal("ecs-tasks.amazonaws.com"),
+            });
+
         new elasticloadbalancingv2.CfnListener(adapter, "web", {
             loadBalancerArn: albArn,
             port: 80,
@@ -90,13 +77,14 @@ pulumi.all([albArn, atgArn, roleArn, subnetIds, securityGroupId]).apply(([albArn
                 targetGroupArn: atgArn,
             }],
         });
-        const taskDefinition = new ecs.CfnTaskDefinition(adapter, "app-task", {
+
+        const taskDefinition = new ecs.CfnTaskDefinition(adapter, "apptask", {
             family: "fargate-task-definition",
             cpu: "256",
             memory: "512",
             networkMode: "awsvpc",
             requiresCompatibilities: ["FARGATE"],
-            executionRoleArn: roleArn,
+            executionRoleArn: role.roleArn,
             containerDefinitions: [{
                 name: "my-app",
                 image: "nginx",
@@ -107,7 +95,7 @@ pulumi.all([albArn, atgArn, roleArn, subnetIds, securityGroupId]).apply(([albArn
                 }],
             }],
         });
-        new ecs.CfnService(adapter, "app-svc", {
+        new ecs.CfnService(adapter, "appsvc", {
             serviceName: "app-svc-cloud-api",
             cluster: cluster.attrArn,
             desiredCount: 1,
@@ -125,61 +113,7 @@ pulumi.all([albArn, atgArn, roleArn, subnetIds, securityGroupId]).apply(([albArn
                 containerName: "my-app",
                 containerPort: 80,
             }],
-        }/*, { dependsOn: [wl] }*/);
+        });
         return adapter;
     });
-
-    // new CdkComponent("test", stack => {
-    //     const cluster = new ecs.Cluster(stack, "cluster");
-
-    //     const wl = new elasticloadbalancingv2.CfnListener(stack, "web", {
-    //         loadBalancerArn: albArn,
-    //         port: 80,
-    //         protocol: "HTTP",
-    //         defaultActions: [{
-    //             type: "forward",
-    //             targetGroupArn: atgArn,
-    //         }],
-    //     });
-
-    //     const taskDefinition = new ecs.CfnTaskDefinition(stack, "app-task", {
-    //         family: "fargate-task-definition",
-    //         cpu: "256",
-    //         memory: "512",
-    //         networkMode: "awsvpc",
-    //         requiresCompatibilities: ["FARGATE"],
-    //         executionRoleArn: roleArn,
-    //         containerDefinitions:[{
-    //             name: "my-app",
-    //             image: "nginx",
-    //             portMappings: [{
-    //                 containerPort: 80,
-    //                 hostPort: 80,
-    //                 protocol: "tcp"
-    //             }],
-    //         }],
-    //     });
-
-    //     // console.debug(cluster.attrArn);
-
-    //     // const service = new ecs.CfnService(stack, "app-svc", {
-    //     //     serviceName: "app-svc-cloud-api",
-    //     //     cluster: cluster.attrArn,
-    //     //     desiredCount: 1,
-    //     //     launchType: "FARGATE",
-    //     //     taskDefinition: taskDefinition.attrTaskDefinitionArn,
-    //     //     networkConfiguration: {
-    //     //         awsvpcConfiguration: {
-    //     //             assignPublicIp: "ENABLED",
-    //     //             subnets: subnetIds,
-    //     //             securityGroups: [securityGroupId],
-    //     //         },
-    //     //     },
-    //     //     loadBalancers: [{
-    //     //         targetGroupArn: atgArn,
-    //     //         containerName: "my-app",
-    //     //         containerPort: 80,
-    //     //     }],
-    //     // }/*, { dependsOn: [wl] }*/);
-    // });
 });

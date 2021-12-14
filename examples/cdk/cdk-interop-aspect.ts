@@ -1,73 +1,114 @@
 import * as cdk from 'aws-cdk-lib/lib/core';
 import * as pulumi from "@pulumi/pulumi";
-import {CdkResource, normalize, firstToLower} from "./cdk-interop";
-import { Stack, CfnElement, IResolvable, Aspects, Token } from "aws-cdk-lib";
-import { Construct, ConstructOrder } from "constructs";
+import { CdkResource, normalize, firstToLower } from "./cdk-interop";
+import { Stack, CfnElement, Aspects, Token } from "aws-cdk-lib";
+import { Construct, ConstructOrder, Node, IConstruct } from "constructs";
+import { ecs, iam } from '@pulumi/aws-native';
+import { ResourceType } from 'aws-cdk-lib/lib/aws-config';
+import { debug } from '@pulumi/pulumi/log';
 
 export class CdkStackComponent extends pulumi.ComponentResource {
-  constructor(name: string, args: (scope: Construct) => cdk.Stack, opts?: pulumi.CustomResourceOptions) {
+  constructor(name: string, args: (scope: Construct, parent: pulumi.ComponentResource) => cdk.Stack, opts?: pulumi.CustomResourceOptions) {
     super("aws-native:cdk:StackComponent", name, args, opts);
     const app = new cdk.App();
-    const stack = args(app);
+    const stack = args(app, this);
     app.synth();
   }
 }
 
 
 export class AwsPulumiAdapter extends Stack {
-    constructor(scope: Construct, id: string) {
-      super(undefined, id);
-  
-      const host = new PulumiCDKBridge(scope, id, this);
-  
-      Aspects.of(scope).add({
-        visit: (node) => {
-          if (node === scope) {
-            host.convert();
-          }
-        },
-      });
-    }
+  constructor(scope: Construct, id: string, readonly parent: pulumi.ComponentResource) {
+    super(undefined, id);
+
+    const host = new PulumiCDKBridge(scope, id, this);
+
+    Aspects.of(scope).add({
+      visit: (node) => {
+        if (node === scope) {
+          host.convert();
+        }
+      },
+    });
   }
+}
+
+export type Mapping<T extends pulumi.CustomResource> = {
+  resource: T;
+  resourceType: string;
+};
 
 class PulumiCDKBridge extends Construct {
-    constructor(
-      scope: Construct,
-      id: string,
-      private readonly host: AwsPulumiAdapter
-    ) {
-      super(scope, id);
-      
-    }
-  
-    convert() {
-      for (const r of this.host.node.findAll()) {
-        if (r instanceof CfnElement) {
-          const cfn = this.host.resolve(
-            (r as any)._toCloudFormation()
-          ) as CloudFormationTemplate;
-          for (const [logical, value] of Object.entries(cfn.Resources || {})) {
-            const typeName = value.Type;
-            let props = this.processIntrinsics(value.Properties);
-            props = normalize(props);
-            new CdkResource(logical, typeName, props);
+  // resources!: { [key: string]: pulumi.CustomResource };
+  resources!: { [key: string]: Mapping<pulumi.CustomResource> };
+
+  constructor(
+    scope: Construct,
+    id: string,
+    private readonly host: AwsPulumiAdapter
+  ) {
+    super(scope, id);
+    this.resources = {};
+  }
+
+  convert() {
+    for (const r of this.host.node.findAll(ConstructOrder.POSTORDER)) {
+      if (r instanceof CfnElement) {
+        const cfn = this.host.resolve(
+          (r as any)._toCloudFormation()
+        ) as CloudFormationTemplate;
+        for (const [logical, value] of Object.entries(cfn.Resources || {})) {
+          const typeName = value.Type;
+          debug(`Creating resource for ${logical}:\n${JSON.stringify(cfn)}`);
+          let props = this.processIntrinsics(value.Properties);
+          const normProps = normalize(props);
+          switch (typeName) {
+            case "AWS::ECS::Cluster":
+              debug("Creating ECS Cluster resource");
+              const c = new ecs.Cluster(logical, normProps, { parent: this.host.parent });
+              this.resources[logical] = {resource: c, resourceType: typeName};
+              break;
+            case "AWS::ECS::TaskDefinition":
+              debug("Creating ECS task definition");
+              const t = new ecs.TaskDefinition(logical, normProps, {parent: this.host.parent });
+              this.resources[logical] = {resource: t, resourceType: typeName}
+              break;
+            case "AWS::IAM::Role":
+              debug("Creating IAM Role");
+              const morphed: any = {};
+              Object.entries(props).forEach(([k, v]) => {
+                if (k == "AssumeRolePolicyDocument") {
+                  morphed[firstToLower(k)] = v;
+                } else {
+                  morphed[k] = v;
+                }
+              });
+              const r = new iam.Role(logical, morphed, {parent: this.host.parent});
+              this.resources[logical] = {resource: r, resourceType: typeName};
+              break;
+            default:
+              debug(`Creating fallthrough CdkResource for ${logical}`);
+              const f = new CdkResource(logical, typeName, normProps, { parent: this.host.parent });
+              this.resources[logical] = {resource: f, resourceType: typeName};
           }
-          for (const [conditionId, condition] of Object.entries(
-            cfn.Conditions || {}
-          )) {
-            // Do something with the condition
-          }
-          for (const [outputId, args] of Object.entries(cfn.Outputs || {})) {
-            // Do something with the outputs
-          }
+          debug(`Done creating resource for ${logical}`)
+        }
+        for (const [conditionId, condition] of Object.entries(
+          cfn.Conditions || {}
+        )) {
+          // Do something with the condition
+        }
+        for (const [outputId, args] of Object.entries(cfn.Outputs || {})) {
+          // Do something with the outputs
         }
       }
     }
+  }
 
   private processIntrinsics(obj: any): any {
     if (typeof obj === "string") {
       if (Token.isUnresolved(obj)) {
-        console.debug(`Unresolved: ${JSON.stringify(obj)}`);
+        debug(`Unresolved: ${JSON.stringify(obj)}`);
         return this.host.resolve(obj);
       }
       return obj;
@@ -106,7 +147,7 @@ class PulumiCDKBridge extends Construct {
   private resolveIntrinsic(fn: string, params: any) {
     switch (fn) {
       case "Fn::GetAtt": {
-        console.debug(`Fn::GetAtt(${params[0]}, ${firstToLower(params[1])})`);
+        debug(`Fn::GetAtt(${params[0]}, ${firstToLower(params[1])})`);
         return this.resolveAtt(params[0], firstToLower(params[1]));
       }
 
@@ -144,21 +185,65 @@ class PulumiCDKBridge extends Construct {
     }
   }
 
-  private resolveAtt(logicalId: string, attribute: string) {
-    const child = this.host.node.tryFindChild(logicalId);
-    if (!(child instanceof CfnElement)) {
-      for (const c of this.host.node.findAll(ConstructOrder.POSTORDER)) {
-        console.debug(`Id: ${c.node.id}`)
+  private lookup(logicalId: string, visited: Set<IConstruct>, startat: IConstruct = this.host): IConstruct | undefined {
+    const c = startat.node.tryFindChild(logicalId);
+    if (c) {
+      return c;
+    }
+
+    visited.add(startat);
+
+    for (const c of startat.node.children) {
+      debug(`looking for ${logicalId}: path = ${c.node.path}`);
+      if (visited.has(c)) {
+        debug(`found ${c.node.path} already`);
+        continue;
       }
+
+      if (c instanceof CfnElement) {
+        const resolved = this.host.resolve((c as CfnElement).logicalId);
+        if (resolved == logicalId) {
+          return c;
+        }
+        debug(`${this.host.resolve((c as CfnElement).logicalId)}`)
+      }
+
+      const ret = this.lookup(logicalId, visited, c);
+      if (ret) {
+        return ret;
+      }
+    }
+
+    return undefined;
+  }
+
+  private resolveAtt(logicalId: string, attribute: string) {
+    const child = this.lookup(logicalId, new Set<IConstruct>());
+    debug(`resolving ref for ${logicalId}: ${child}`);
+    if (!(child instanceof CfnElement)) {
       throw new Error(
-        `unable to resolve a "Ref" to a resource with the logical ID ${logicalId}: ${JSON.stringify(child)}`
+        `unable to resolve a "Ref" to a resource with the logical ID ${logicalId}: ${typeof child}`
       );
     }
 
-    for (const [id, value] of Object.entries(((child as CfnElement)._toCloudFormation() as CloudFormationTemplate).Resources || {})) {
+    const cfn = ((child as CfnElement)._toCloudFormation() as CloudFormationTemplate);
+    for (const [id, value] of Object.entries(cfn.Resources || {})) {
       const resolvedId = this.host.resolve(id);
       if (!value.Properties) {
-        console.debug(`No value for id: ${resolvedId}`)
+        debug(`No value for id: ${resolvedId} provided. Will look in resource.`)
+        const res = this.resources[resolvedId];
+        if (res) {
+          debug(`Resource: ${resolvedId} - resourceType: ${res.resourceType} - ${Object.getOwnPropertyNames(res.resource)}`)
+          const descs = Object.getOwnPropertyDescriptors(res.resource);
+          const d = descs[attribute];
+          if (!d) {
+            throw new Error(`No attribute ${attribute} found for resource ${logicalId}`)
+          }
+          return d.value;
+          // throw new Error(`Type of ${attribute} in resource ${logicalId} is ${typeof d.value}`)
+        } else {
+          debug(`No resource found for ${resolvedId} - current resources: ${this.resources.keys}`)
+        }
         continue
       }
       const att = value.Properties[attribute];
@@ -169,10 +254,10 @@ class PulumiCDKBridge extends Construct {
       }
     }
 
-    console.debug(`resolveAtt for ${logicalId}`)
-      throw new Error(
-        `no "${attribute}" attribute mapping for resource ${logicalId}`
-      );
+    debug(`resolveAtt for ${logicalId}`)
+    throw new Error(
+      `no "${attribute}" attribute mapping for resource ${logicalId}`
+    );
   }
 }
 

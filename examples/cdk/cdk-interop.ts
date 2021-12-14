@@ -1,5 +1,6 @@
 import * as cdk from 'aws-cdk-lib/lib/core';
 import * as pulumi from "@pulumi/pulumi";
+import { debug } from '@pulumi/pulumi/log';
 
 export function firstToLower(str: string) {
   return str.replace(
@@ -47,7 +48,7 @@ export class CdkResource extends pulumi.CustomResource {
     const res = type.split("::")[2];
     const mod = moduleName(type);
     const resourceName = `aws-native:${mod}:${res}`
-    console.debug(`CdkResource ${resourceName}: ${JSON.stringify(args)}`)
+    debug(`CdkResource ${resourceName}: ${JSON.stringify(args)}`)
     // console.debug(`CdkResource opts: ${JSON.stringify(opts)}`)
     super(resourceName, name, args, opts);
   }
