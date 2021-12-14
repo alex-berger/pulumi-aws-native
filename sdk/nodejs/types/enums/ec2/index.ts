@@ -203,6 +203,13 @@ export const EC2FleetType = {
 
 export type EC2FleetType = (typeof EC2FleetType)[keyof typeof EC2FleetType];
 
+export const FlowLogDestinationOptionsPropertiesFileFormat = {
+    PlainText: "plain-text",
+    Parquet: "parquet",
+} as const;
+
+export type FlowLogDestinationOptionsPropertiesFileFormat = (typeof FlowLogDestinationOptionsPropertiesFileFormat)[keyof typeof FlowLogDestinationOptionsPropertiesFileFormat];
+
 export const FlowLogLogDestinationType = {
     CloudWatchLogs: "cloud-watch-logs",
     S3: "s3",
@@ -235,25 +242,39 @@ export const FlowLogTrafficType = {
  */
 export type FlowLogTrafficType = (typeof FlowLogTrafficType)[keyof typeof FlowLogTrafficType];
 
-export const HostAutoPlacement = {
-    On: "on",
-    Off: "off",
+export const IPAMPoolIpamScopeType = {
+    Public: "public",
+    Private: "private",
 } as const;
 
 /**
- * Indicates whether the host accepts any untargeted instance launches that match its instance type configuration, or if it only accepts Host tenancy instance launches that specify its unique host ID.
+ * Determines whether this scope contains publicly routable space or space for a private network
  */
-export type HostAutoPlacement = (typeof HostAutoPlacement)[keyof typeof HostAutoPlacement];
+export type IPAMPoolIpamScopeType = (typeof IPAMPoolIpamScopeType)[keyof typeof IPAMPoolIpamScopeType];
 
-export const HostRecovery = {
-    On: "on",
-    Off: "off",
+export const IPAMPoolState = {
+    CreateInProgress: "create-in-progress",
+    CreateComplete: "create-complete",
+    ModifyInProgress: "modify-in-progress",
+    ModifyComplete: "modify-complete",
+    DeleteInProgress: "delete-in-progress",
+    DeleteComplete: "delete-complete",
 } as const;
 
 /**
- * Indicates whether to enable or disable host recovery for the Dedicated Host. Host recovery is disabled by default.
+ * The state of this pool. This can be one of the following values: "create-in-progress", "create-complete", "modify-in-progress", "modify-complete", "delete-in-progress", or "delete-complete"
  */
-export type HostRecovery = (typeof HostRecovery)[keyof typeof HostRecovery];
+export type IPAMPoolState = (typeof IPAMPoolState)[keyof typeof IPAMPoolState];
+
+export const IPAMScopeIpamScopeType = {
+    Public: "public",
+    Private: "private",
+} as const;
+
+/**
+ * Determines whether this scope contains publicly routable space or space for a private network
+ */
+export type IPAMScopeIpamScopeType = (typeof IPAMScopeIpamScopeType)[keyof typeof IPAMScopeIpamScopeType];
 
 export const NetworkInsightsAnalysisStatus = {
     Running: "running",
@@ -474,11 +495,3 @@ export const SpotFleetTagSpecificationResourceType = {
 } as const;
 
 export type SpotFleetTagSpecificationResourceType = (typeof SpotFleetTagSpecificationResourceType)[keyof typeof SpotFleetTagSpecificationResourceType];
-
-export const VPCEndpointVpcEndpointType = {
-    Interface: "Interface",
-    Gateway: "Gateway",
-    GatewayLoadBalancer: "GatewayLoadBalancer",
-} as const;
-
-export type VPCEndpointVpcEndpointType = (typeof VPCEndpointVpcEndpointType)[keyof typeof VPCEndpointVpcEndpointType];

@@ -26,6 +26,7 @@ __all__ = [
     'ClientVpnEndpointTagArgs',
     'CustomerGatewayTagArgs',
     'DHCPOptionsTagArgs',
+    'DestinationOptionsPropertiesArgs',
     'EC2FleetAcceleratorCountRequestArgs',
     'EC2FleetAcceleratorTotalMemoryMiBRequestArgs',
     'EC2FleetBaselineEbsBandwidthMbpsRequestArgs',
@@ -49,6 +50,11 @@ __all__ = [
     'EC2FleetVCpuCountRangeRequestArgs',
     'EIPTagArgs',
     'FlowLogTagArgs',
+    'IPAMIpamOperatingRegionArgs',
+    'IPAMPoolProvisionedCidrArgs',
+    'IPAMPoolTagArgs',
+    'IPAMScopeTagArgs',
+    'IPAMTagArgs',
     'InstanceAssociationParameterArgs',
     'InstanceBlockDeviceMappingArgs',
     'InstanceCpuOptionsArgs',
@@ -678,6 +684,45 @@ class DHCPOptionsTagArgs:
     @value.setter
     def value(self, value: pulumi.Input[str]):
         pulumi.set(self, "value", value)
+
+
+@pulumi.input_type
+class DestinationOptionsPropertiesArgs:
+    def __init__(__self__, *,
+                 hive_compatible_partitions: pulumi.Input[bool],
+                 per_hour_partition: pulumi.Input[bool],
+                 file_format: Optional[pulumi.Input['FlowLogDestinationOptionsPropertiesFileFormat']] = None):
+        pulumi.set(__self__, "hive_compatible_partitions", hive_compatible_partitions)
+        pulumi.set(__self__, "per_hour_partition", per_hour_partition)
+        if file_format is not None:
+            pulumi.set(__self__, "file_format", file_format)
+
+    @property
+    @pulumi.getter(name="hiveCompatiblePartitions")
+    def hive_compatible_partitions(self) -> pulumi.Input[bool]:
+        return pulumi.get(self, "hive_compatible_partitions")
+
+    @hive_compatible_partitions.setter
+    def hive_compatible_partitions(self, value: pulumi.Input[bool]):
+        pulumi.set(self, "hive_compatible_partitions", value)
+
+    @property
+    @pulumi.getter(name="perHourPartition")
+    def per_hour_partition(self) -> pulumi.Input[bool]:
+        return pulumi.get(self, "per_hour_partition")
+
+    @per_hour_partition.setter
+    def per_hour_partition(self, value: pulumi.Input[bool]):
+        pulumi.set(self, "per_hour_partition", value)
+
+    @property
+    @pulumi.getter(name="fileFormat")
+    def file_format(self) -> Optional[pulumi.Input['FlowLogDestinationOptionsPropertiesFileFormat']]:
+        return pulumi.get(self, "file_format")
+
+    @file_format.setter
+    def file_format(self, value: Optional[pulumi.Input['FlowLogDestinationOptionsPropertiesFileFormat']]):
+        pulumi.set(self, "file_format", value)
 
 
 @pulumi.input_type
@@ -1849,6 +1894,162 @@ class FlowLogTagArgs:
     @property
     @pulumi.getter
     def value(self) -> pulumi.Input[str]:
+        return pulumi.get(self, "value")
+
+    @value.setter
+    def value(self, value: pulumi.Input[str]):
+        pulumi.set(self, "value", value)
+
+
+@pulumi.input_type
+class IPAMIpamOperatingRegionArgs:
+    def __init__(__self__, *,
+                 region_name: pulumi.Input[str]):
+        """
+        The regions IPAM is enabled for. Allows pools to be created in these regions, as well as enabling monitoring
+        :param pulumi.Input[str] region_name: The name of the region.
+        """
+        pulumi.set(__self__, "region_name", region_name)
+
+    @property
+    @pulumi.getter(name="regionName")
+    def region_name(self) -> pulumi.Input[str]:
+        """
+        The name of the region.
+        """
+        return pulumi.get(self, "region_name")
+
+    @region_name.setter
+    def region_name(self, value: pulumi.Input[str]):
+        pulumi.set(self, "region_name", value)
+
+
+@pulumi.input_type
+class IPAMPoolProvisionedCidrArgs:
+    def __init__(__self__, *,
+                 cidr: pulumi.Input[str]):
+        """
+        An address space to be inserted into this pool. All allocations must be made from this address space.
+        """
+        pulumi.set(__self__, "cidr", cidr)
+
+    @property
+    @pulumi.getter
+    def cidr(self) -> pulumi.Input[str]:
+        return pulumi.get(self, "cidr")
+
+    @cidr.setter
+    def cidr(self, value: pulumi.Input[str]):
+        pulumi.set(self, "cidr", value)
+
+
+@pulumi.input_type
+class IPAMPoolTagArgs:
+    def __init__(__self__, *,
+                 key: pulumi.Input[str],
+                 value: pulumi.Input[str]):
+        """
+        A key-value pair to associate with a resource.
+        :param pulumi.Input[str] key: The key name of the tag. You can specify a value that is 1 to 128 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -.
+        :param pulumi.Input[str] value: The value for the tag. You can specify a value that is 0 to 256 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -.
+        """
+        pulumi.set(__self__, "key", key)
+        pulumi.set(__self__, "value", value)
+
+    @property
+    @pulumi.getter
+    def key(self) -> pulumi.Input[str]:
+        """
+        The key name of the tag. You can specify a value that is 1 to 128 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -.
+        """
+        return pulumi.get(self, "key")
+
+    @key.setter
+    def key(self, value: pulumi.Input[str]):
+        pulumi.set(self, "key", value)
+
+    @property
+    @pulumi.getter
+    def value(self) -> pulumi.Input[str]:
+        """
+        The value for the tag. You can specify a value that is 0 to 256 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -.
+        """
+        return pulumi.get(self, "value")
+
+    @value.setter
+    def value(self, value: pulumi.Input[str]):
+        pulumi.set(self, "value", value)
+
+
+@pulumi.input_type
+class IPAMScopeTagArgs:
+    def __init__(__self__, *,
+                 key: pulumi.Input[str],
+                 value: pulumi.Input[str]):
+        """
+        A key-value pair to associate with a resource.
+        :param pulumi.Input[str] key: The key name of the tag. You can specify a value that is 1 to 128 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -.
+        :param pulumi.Input[str] value: The value for the tag. You can specify a value that is 0 to 256 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -.
+        """
+        pulumi.set(__self__, "key", key)
+        pulumi.set(__self__, "value", value)
+
+    @property
+    @pulumi.getter
+    def key(self) -> pulumi.Input[str]:
+        """
+        The key name of the tag. You can specify a value that is 1 to 128 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -.
+        """
+        return pulumi.get(self, "key")
+
+    @key.setter
+    def key(self, value: pulumi.Input[str]):
+        pulumi.set(self, "key", value)
+
+    @property
+    @pulumi.getter
+    def value(self) -> pulumi.Input[str]:
+        """
+        The value for the tag. You can specify a value that is 0 to 256 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -.
+        """
+        return pulumi.get(self, "value")
+
+    @value.setter
+    def value(self, value: pulumi.Input[str]):
+        pulumi.set(self, "value", value)
+
+
+@pulumi.input_type
+class IPAMTagArgs:
+    def __init__(__self__, *,
+                 key: pulumi.Input[str],
+                 value: pulumi.Input[str]):
+        """
+        A key-value pair to associate with a resource.
+        :param pulumi.Input[str] key: The key name of the tag. You can specify a value that is 1 to 128 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -.
+        :param pulumi.Input[str] value: The value for the tag. You can specify a value that is 0 to 256 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -.
+        """
+        pulumi.set(__self__, "key", key)
+        pulumi.set(__self__, "value", value)
+
+    @property
+    @pulumi.getter
+    def key(self) -> pulumi.Input[str]:
+        """
+        The key name of the tag. You can specify a value that is 1 to 128 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -.
+        """
+        return pulumi.get(self, "key")
+
+    @key.setter
+    def key(self, value: pulumi.Input[str]):
+        pulumi.set(self, "key", value)
+
+    @property
+    @pulumi.getter
+    def value(self) -> pulumi.Input[str]:
+        """
+        The value for the tag. You can specify a value that is 0 to 256 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -.
+        """
         return pulumi.get(self, "value")
 
     @value.setter

@@ -50,7 +50,6 @@ import (
 	pbempty "github.com/golang/protobuf/ptypes/empty"
 	pbstruct "github.com/golang/protobuf/ptypes/struct"
 	"github.com/google/uuid"
-	"github.com/jpillora/backoff"
 	"github.com/pkg/errors"
 	"github.com/pulumi/pulumi-aws-native/provider/pkg/schema"
 	"github.com/pulumi/pulumi-aws-native/provider/pkg/version"
@@ -269,7 +268,9 @@ func (p *cfnProvider) Configure(ctx context.Context, req *pulumirpc.ConfigureReq
 		loadOptions = append(loadOptions, config.WithRegion(region))
 		p.region = region
 	} else {
-		return nil, errors.New("missing required property 'region'")
+		return nil, errors.New("missing required configuration key \"aws-native:region\":" +
+			"The region where AWS operations will take place. Examples are eu-east-1, eu-west-2, etc.\n" +
+			"\tSet a value using the command `pulumi config set aws-native:region <value>`")
 	}
 
 	if profile, ok := varsOrEnv(vars, "aws-native:config:profile", "AWS_PROFILE"); ok {
@@ -647,7 +648,7 @@ func (p *cfnProvider) Create(ctx context.Context, req *pulumirpc.CreateRequest) 
 	if err != nil {
 		return nil, errors.Wrapf(err, "creating resource")
 	}
-	pi, waitErr := p.waitForResourceOpCompletion(ctx, res.ProgressEvent)
+	pi, waitErr := p.waitForResourceOpCompletion(p.canceler.context, res.ProgressEvent)
 
 	// Read the state - even if there was a creation error but the progress event contains a resource ID.
 	var id string
@@ -742,7 +743,7 @@ func (p *cfnProvider) Read(ctx context.Context, req *pulumirpc.ReadRequest) (*pu
 	if !ok {
 		return nil, errors.Errorf("Resource type %s not found", resourceToken)
 	}
-	resourceState, err := p.readResourceState(ctx, spec.CfType, id)
+	resourceState, err := p.readResourceState(p.canceler.context, spec.CfType, id)
 	if err != nil {
 		var oe *smithy.OperationError
 		if errors.As(err, &oe) {
@@ -840,7 +841,7 @@ func (p *cfnProvider) Update(ctx context.Context, req *pulumirpc.UpdateRequest) 
 	docAsString := string(doc)
 	clientToken := uuid.New().String()
 	glog.V(9).Infof("%s.UpdateResource %q id %q token %q state %+v", label, spec.CfType, id, clientToken, ops)
-	res, err := p.cctl.UpdateResource(ctx, &cloudcontrol.UpdateResourceInput{
+	res, err := p.cctl.UpdateResource(p.canceler.context, &cloudcontrol.UpdateResourceInput{
 		ClientToken:   aws.String(clientToken),
 		TypeName:      aws.String(spec.CfType),
 		Identifier:    aws.String(id),
@@ -849,11 +850,11 @@ func (p *cfnProvider) Update(ctx context.Context, req *pulumirpc.UpdateRequest) 
 	if err != nil {
 		return nil, err
 	}
-	if _, err = p.waitForResourceOpCompletion(ctx, res.ProgressEvent); err != nil {
+	if _, err = p.waitForResourceOpCompletion(p.canceler.context, res.ProgressEvent); err != nil {
 		return nil, err
 	}
 
-	resourceState, err := p.readResourceState(ctx, spec.CfType, id)
+	resourceState, err := p.readResourceState(p.canceler.context, spec.CfType, id)
 	if err != nil {
 		return nil, errors.Wrapf(err, "reading resource state")
 	}
@@ -911,7 +912,7 @@ func (p *cfnProvider) Delete(ctx context.Context, req *pulumirpc.DeleteRequest) 
 
 	clientToken := uuid.New().String()
 	glog.V(9).Infof("%s.DeleteResource %q id %q token %q", label, cfType, id, clientToken)
-	res, err := p.cctl.DeleteResource(ctx, &cloudcontrol.DeleteResourceInput{
+	res, err := p.cctl.DeleteResource(p.canceler.context, &cloudcontrol.DeleteResourceInput{
 		ClientToken: aws.String(clientToken),
 		TypeName:    aws.String(cfType),
 		Identifier:  aws.String(id),
@@ -982,13 +983,8 @@ func (p *cfnProvider) readResourceState(ctx context.Context, typeName, identifie
 }
 
 func (p *cfnProvider) waitForResourceOpCompletion(ctx context.Context, pi *types.ProgressEvent) (*types.ProgressEvent, error) {
-	// TODO: Consider using ExponentialJitterBackoff from the AWS Go SDK v2 when we switch over.
-	retryPolicy := backoff.Backoff{
-		Min:    1 * time.Second,
-		Max:    30 * time.Second,
-		Factor: 1.5,
-		Jitter: true,
-	}
+	retryBackoff := retry.NewExponentialJitterBackoff(30 * time.Second)
+	var err error
 	i := 0
 	for {
 		status := pi.OperationStatus
@@ -1011,12 +1007,21 @@ func (p *cfnProvider) waitForResourceOpCompletion(ctx context.Context, pi *types
 			if pi.RetryAfter != nil && pi.RetryAfter.After(time.Now()) {
 				pause = pi.RetryAfter.Sub(time.Now())
 			} else {
-				pause = retryPolicy.Duration()
+				pause, err = retryBackoff.BackoffDelay(i, err)
+				if err != nil {
+					return nil, err
+				}
 			}
 			glog.V(9).Infof("resource operation is in progress, pausing for %v", pause)
 			time.Sleep(pause)
 		default:
 			return nil, errors.Errorf("unknown status %q: %+v", status, pi)
+		}
+
+		select {
+		case <-ctx.Done():
+			return nil, ctx.Err()
+		default: // Continue to wait
 		}
 
 		output, err := p.cctl.GetResourceRequestStatus(ctx, &cloudcontrol.GetResourceRequestStatusInput{

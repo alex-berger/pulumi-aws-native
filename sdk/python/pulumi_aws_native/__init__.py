@@ -29,6 +29,8 @@ if typing.TYPE_CHECKING:
     amazonmq = __amazonmq
     import pulumi_aws_native.amplify as __amplify
     amplify = __amplify
+    import pulumi_aws_native.amplifyuibuilder as __amplifyuibuilder
+    amplifyuibuilder = __amplifyuibuilder
     import pulumi_aws_native.apigateway as __apigateway
     apigateway = __apigateway
     import pulumi_aws_native.apigatewayv2 as __apigatewayv2
@@ -171,6 +173,8 @@ if typing.TYPE_CHECKING:
     events = __events
     import pulumi_aws_native.eventschemas as __eventschemas
     eventschemas = __eventschemas
+    import pulumi_aws_native.evidently as __evidently
+    evidently = __evidently
     import pulumi_aws_native.finspace as __finspace
     finspace = __finspace
     import pulumi_aws_native.fis as __fis
@@ -239,6 +243,8 @@ if typing.TYPE_CHECKING:
     lakeformation = __lakeformation
     import pulumi_aws_native.lambda_ as __lambda_
     lambda_ = __lambda_
+    import pulumi_aws_native.lex as __lex
+    lex = __lex
     import pulumi_aws_native.licensemanager as __licensemanager
     licensemanager = __licensemanager
     import pulumi_aws_native.lightsail as __lightsail
@@ -303,6 +309,8 @@ if typing.TYPE_CHECKING:
     rds = __rds
     import pulumi_aws_native.redshift as __redshift
     redshift = __redshift
+    import pulumi_aws_native.refactorspaces as __refactorspaces
+    refactorspaces = __refactorspaces
     import pulumi_aws_native.rekognition as __rekognition
     rekognition = __rekognition
     import pulumi_aws_native.resiliencehub as __resiliencehub
@@ -319,6 +327,8 @@ if typing.TYPE_CHECKING:
     route53recoveryreadiness = __route53recoveryreadiness
     import pulumi_aws_native.route53resolver as __route53resolver
     route53resolver = __route53resolver
+    import pulumi_aws_native.rum as __rum
+    rum = __rum
     import pulumi_aws_native.s3 as __s3
     s3 = __s3
     import pulumi_aws_native.s3objectlambda as __s3objectlambda
@@ -380,6 +390,7 @@ else:
     acmpca = _utilities.lazy_import('pulumi_aws_native.acmpca')
     amazonmq = _utilities.lazy_import('pulumi_aws_native.amazonmq')
     amplify = _utilities.lazy_import('pulumi_aws_native.amplify')
+    amplifyuibuilder = _utilities.lazy_import('pulumi_aws_native.amplifyuibuilder')
     apigateway = _utilities.lazy_import('pulumi_aws_native.apigateway')
     apigatewayv2 = _utilities.lazy_import('pulumi_aws_native.apigatewayv2')
     appconfig = _utilities.lazy_import('pulumi_aws_native.appconfig')
@@ -451,6 +462,7 @@ else:
     emrcontainers = _utilities.lazy_import('pulumi_aws_native.emrcontainers')
     events = _utilities.lazy_import('pulumi_aws_native.events')
     eventschemas = _utilities.lazy_import('pulumi_aws_native.eventschemas')
+    evidently = _utilities.lazy_import('pulumi_aws_native.evidently')
     finspace = _utilities.lazy_import('pulumi_aws_native.finspace')
     fis = _utilities.lazy_import('pulumi_aws_native.fis')
     fms = _utilities.lazy_import('pulumi_aws_native.fms')
@@ -485,6 +497,7 @@ else:
     kms = _utilities.lazy_import('pulumi_aws_native.kms')
     lakeformation = _utilities.lazy_import('pulumi_aws_native.lakeformation')
     lambda_ = _utilities.lazy_import('pulumi_aws_native.lambda_')
+    lex = _utilities.lazy_import('pulumi_aws_native.lex')
     licensemanager = _utilities.lazy_import('pulumi_aws_native.licensemanager')
     lightsail = _utilities.lazy_import('pulumi_aws_native.lightsail')
     location = _utilities.lazy_import('pulumi_aws_native.location')
@@ -517,6 +530,7 @@ else:
     ram = _utilities.lazy_import('pulumi_aws_native.ram')
     rds = _utilities.lazy_import('pulumi_aws_native.rds')
     redshift = _utilities.lazy_import('pulumi_aws_native.redshift')
+    refactorspaces = _utilities.lazy_import('pulumi_aws_native.refactorspaces')
     rekognition = _utilities.lazy_import('pulumi_aws_native.rekognition')
     resiliencehub = _utilities.lazy_import('pulumi_aws_native.resiliencehub')
     resourcegroups = _utilities.lazy_import('pulumi_aws_native.resourcegroups')
@@ -525,6 +539,7 @@ else:
     route53recoverycontrol = _utilities.lazy_import('pulumi_aws_native.route53recoverycontrol')
     route53recoveryreadiness = _utilities.lazy_import('pulumi_aws_native.route53recoveryreadiness')
     route53resolver = _utilities.lazy_import('pulumi_aws_native.route53resolver')
+    rum = _utilities.lazy_import('pulumi_aws_native.rum')
     s3 = _utilities.lazy_import('pulumi_aws_native.s3')
     s3objectlambda = _utilities.lazy_import('pulumi_aws_native.s3objectlambda')
     s3outposts = _utilities.lazy_import('pulumi_aws_native.s3outposts')
@@ -594,6 +609,15 @@ _utilities.register(
    "aws-native:amplify:App": "App",
    "aws-native:amplify:Branch": "Branch",
    "aws-native:amplify:Domain": "Domain"
+  }
+ },
+ {
+  "pkg": "aws-native",
+  "mod": "amplifyuibuilder",
+  "fqn": "pulumi_aws_native.amplifyuibuilder",
+  "classes": {
+   "aws-native:amplifyuibuilder:Component": "Component",
+   "aws-native:amplifyuibuilder:Theme": "Theme"
   }
  },
  {
@@ -736,6 +760,8 @@ _utilities.register(
    "aws-native:appsync:ApiCache": "ApiCache",
    "aws-native:appsync:ApiKey": "ApiKey",
    "aws-native:appsync:DataSource": "DataSource",
+   "aws-native:appsync:DomainName": "DomainName",
+   "aws-native:appsync:DomainNameApiAssociation": "DomainNameApiAssociation",
    "aws-native:appsync:FunctionConfiguration": "FunctionConfiguration",
    "aws-native:appsync:GraphQLApi": "GraphQLApi",
    "aws-native:appsync:GraphQLSchema": "GraphQLSchema",
@@ -1237,6 +1263,10 @@ _utilities.register(
    "aws-native:ec2:FlowLog": "FlowLog",
    "aws-native:ec2:GatewayRouteTableAssociation": "GatewayRouteTableAssociation",
    "aws-native:ec2:Host": "Host",
+   "aws-native:ec2:IPAM": "IPAM",
+   "aws-native:ec2:IPAMAllocation": "IPAMAllocation",
+   "aws-native:ec2:IPAMPool": "IPAMPool",
+   "aws-native:ec2:IPAMScope": "IPAMScope",
    "aws-native:ec2:Instance": "Instance",
    "aws-native:ec2:InternetGateway": "InternetGateway",
    "aws-native:ec2:LaunchTemplate": "LaunchTemplate",
@@ -1441,6 +1471,17 @@ _utilities.register(
    "aws-native:eventschemas:Registry": "Registry",
    "aws-native:eventschemas:RegistryPolicy": "RegistryPolicy",
    "aws-native:eventschemas:Schema": "Schema"
+  }
+ },
+ {
+  "pkg": "aws-native",
+  "mod": "evidently",
+  "fqn": "pulumi_aws_native.evidently",
+  "classes": {
+   "aws-native:evidently:Experiment": "Experiment",
+   "aws-native:evidently:Feature": "Feature",
+   "aws-native:evidently:Launch": "Launch",
+   "aws-native:evidently:Project": "Project"
   }
  },
  {
@@ -1861,6 +1902,17 @@ _utilities.register(
  },
  {
   "pkg": "aws-native",
+  "mod": "lex",
+  "fqn": "pulumi_aws_native.lex",
+  "classes": {
+   "aws-native:lex:Bot": "Bot",
+   "aws-native:lex:BotAlias": "BotAlias",
+   "aws-native:lex:BotVersion": "BotVersion",
+   "aws-native:lex:ResourcePolicy": "ResourcePolicy"
+  }
+ },
+ {
+  "pkg": "aws-native",
   "mod": "licensemanager",
   "fqn": "pulumi_aws_native.licensemanager",
   "classes": {
@@ -2223,6 +2275,17 @@ _utilities.register(
  },
  {
   "pkg": "aws-native",
+  "mod": "refactorspaces",
+  "fqn": "pulumi_aws_native.refactorspaces",
+  "classes": {
+   "aws-native:refactorspaces:Application": "Application",
+   "aws-native:refactorspaces:Environment": "Environment",
+   "aws-native:refactorspaces:Route": "Route",
+   "aws-native:refactorspaces:Service": "Service"
+  }
+ },
+ {
+  "pkg": "aws-native",
   "mod": "rekognition",
   "fqn": "pulumi_aws_native.rekognition",
   "classes": {
@@ -2309,6 +2372,14 @@ _utilities.register(
    "aws-native:route53resolver:ResolverQueryLoggingConfigAssociation": "ResolverQueryLoggingConfigAssociation",
    "aws-native:route53resolver:ResolverRule": "ResolverRule",
    "aws-native:route53resolver:ResolverRuleAssociation": "ResolverRuleAssociation"
+  }
+ },
+ {
+  "pkg": "aws-native",
+  "mod": "rum",
+  "fqn": "pulumi_aws_native.rum",
+  "classes": {
+   "aws-native:rum:AppMonitor": "AppMonitor"
   }
  },
  {
@@ -2556,6 +2627,7 @@ _utilities.register(
   "fqn": "pulumi_aws_native.timestream",
   "classes": {
    "aws-native:timestream:Database": "Database",
+   "aws-native:timestream:ScheduledQuery": "ScheduledQuery",
    "aws-native:timestream:Table": "Table"
   }
  },

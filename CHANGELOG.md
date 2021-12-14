@@ -1,6 +1,13 @@
 ## HEAD (Unreleased)
 
-(None)
+- Explain how to add missing region config [#220](https://github.com/pulumi/pulumi-aws-native/issues/220).
+- Allow cancellation during ongoing operations [#43](https://github.com/pulumi/pulumi-aws-native/issues/43)
+
+---
+
+## 0.8.0 (November 30, 2021)
+
+Update to include the latest resource definitions
 
 ## 0.7.1 (November 23 2021)
 
@@ -23,8 +30,6 @@
   Note that the Pulumi state backend also encrypts the state as a whole and other state backends
   support a similar mechanism which should significantly limit exposure of the creds.
   Nonetheless, We sincerely regret the inconvenience this causes.
-
----
 
 ## 0.7.0 (November 22, 2021)
 

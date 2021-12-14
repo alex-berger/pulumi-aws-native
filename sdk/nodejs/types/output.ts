@@ -406,6 +406,52 @@ export namespace amplify {
 
 }
 
+export namespace amplifyuibuilder {
+    export interface ComponentBindingProperties {
+    }
+
+    export interface ComponentChild {
+        children?: outputs.amplifyuibuilder.ComponentChild[];
+        componentType: string;
+        name: string;
+        properties: outputs.amplifyuibuilder.ComponentProperties;
+    }
+
+    export interface ComponentCollectionProperties {
+    }
+
+    export interface ComponentOverrides {
+    }
+
+    export interface ComponentProperties {
+    }
+
+    export interface ComponentTags {
+    }
+
+    export interface ComponentVariant {
+        overrides?: outputs.amplifyuibuilder.ComponentOverrides;
+        variantValues?: outputs.amplifyuibuilder.ComponentVariantValues;
+    }
+
+    export interface ComponentVariantValues {
+    }
+
+    export interface ThemeTags {
+    }
+
+    export interface ThemeValue {
+        children?: outputs.amplifyuibuilder.ThemeValues[];
+        value?: string;
+    }
+
+    export interface ThemeValues {
+        key?: string;
+        value?: outputs.amplifyuibuilder.ThemeValue;
+    }
+
+}
+
 export namespace apigateway {
     export interface ApiKeyStageKey {
         /**
@@ -435,59 +481,176 @@ export namespace apigateway {
     }
 
     export interface DeploymentAccessLogSetting {
+        /**
+         * The Amazon Resource Name (ARN) of the CloudWatch Logs log group or Kinesis Data Firehose delivery stream to receive access logs. If you specify a Kinesis Data Firehose delivery stream, the stream name must begin with amazon-apigateway-. 
+         */
         destinationArn?: string;
+        /**
+         * A single line format of the access logs of data, as specified by selected $context variables. The format must include at least $context.requestId. 
+         */
         format?: string;
     }
 
     export interface DeploymentCanarySetting {
+        /**
+         * The percent (0-100) of traffic diverted to a canary deployment.
+         */
         percentTraffic?: number;
+        /**
+         * Stage variables overridden for a canary release deployment, including new stage variables introduced in the canary. These stage variables are represented as a string-to-string map between stage variable names and their values. 
+         */
         stageVariableOverrides?: any;
+        /**
+         * Whether the canary deployment uses the stage cache or not.
+         */
         useStageCache?: boolean;
     }
 
     export interface DeploymentCanarySettings {
+        /**
+         * The percentage (0-100) of traffic diverted to a canary deployment.
+         */
         percentTraffic?: number;
+        /**
+         * Stage variables overridden for a canary release deployment, including new stage variables introduced in the canary. These stage variables are represented as a string-to-string map between stage variable names and their values. Duplicates are not allowed.
+         */
         stageVariableOverrides?: any;
+        /**
+         * Whether the canary deployment uses the stage cache.
+         */
         useStageCache?: boolean;
     }
 
     export interface DeploymentMethodSetting {
+        /**
+         * Indicates whether the cached responses are encrypted
+         */
         cacheDataEncrypted?: boolean;
+        /**
+         * The time-to-live (TTL) period, in seconds, that specifies how long API Gateway caches responses. 
+         */
         cacheTtlInSeconds?: number;
+        /**
+         * Indicates whether responses are cached and returned for requests. You must enable a cache cluster on the stage to cache responses.
+         */
         cachingEnabled?: boolean;
+        /**
+         * Indicates whether data trace logging is enabled for methods in the stage. API Gateway pushes these logs to Amazon CloudWatch Logs. 
+         */
         dataTraceEnabled?: boolean;
+        /**
+         * The HTTP method.
+         */
         httpMethod?: string;
+        /**
+         * The logging level for this method. For valid values, see the loggingLevel property of the Stage resource in the Amazon API Gateway API Reference. 
+         */
         loggingLevel?: string;
+        /**
+         * Indicates whether Amazon CloudWatch metrics are enabled for methods in the stage.
+         */
         metricsEnabled?: boolean;
+        /**
+         * The resource path for this method. Forward slashes (/) are encoded as ~1 and the initial slash must include a forward slash. 
+         */
         resourcePath?: string;
+        /**
+         * The number of burst requests per second that API Gateway permits across all APIs, stages, and methods in your AWS account.
+         */
         throttlingBurstLimit?: number;
+        /**
+         * The number of steady-state requests per second that API Gateway permits across all APIs, stages, and methods in your AWS account.
+         */
         throttlingRateLimit?: number;
     }
 
     export interface DeploymentStageDescription {
+        /**
+         * Specifies settings for logging access in this stage.
+         */
         accessLogSetting?: outputs.apigateway.DeploymentAccessLogSetting;
+        /**
+         * Indicates whether cache clustering is enabled for the stage.
+         */
         cacheClusterEnabled?: boolean;
+        /**
+         * The size of the stage's cache cluster.
+         */
         cacheClusterSize?: string;
+        /**
+         * The time-to-live (TTL) period, in seconds, that specifies how long API Gateway caches responses. 
+         */
         cacheDataEncrypted?: boolean;
+        /**
+         * The time-to-live (TTL) period, in seconds, that specifies how long API Gateway caches responses. 
+         */
         cacheTtlInSeconds?: number;
+        /**
+         * Indicates whether responses are cached and returned for requests. You must enable a cache cluster on the stage to cache responses.
+         */
         cachingEnabled?: boolean;
+        /**
+         * Specifies settings for the canary deployment in this stage.
+         */
         canarySetting?: outputs.apigateway.DeploymentCanarySetting;
+        /**
+         * The identifier of the client certificate that API Gateway uses to call your integration endpoints in the stage. 
+         */
         clientCertificateId?: string;
+        /**
+         * Indicates whether data trace logging is enabled for methods in the stage. API Gateway pushes these logs to Amazon CloudWatch Logs. 
+         */
         dataTraceEnabled?: boolean;
+        /**
+         * A description of the purpose of the stage.
+         */
         description?: string;
+        /**
+         * The version identifier of the API documentation snapshot.
+         */
         documentationVersion?: string;
+        /**
+         * The logging level for this method. For valid values, see the loggingLevel property of the Stage resource in the Amazon API Gateway API Reference. 
+         */
         loggingLevel?: string;
+        /**
+         * Configures settings for all of the stage's methods.
+         */
         methodSettings?: outputs.apigateway.DeploymentMethodSetting[];
+        /**
+         * Indicates whether Amazon CloudWatch metrics are enabled for methods in the stage.
+         */
         metricsEnabled?: boolean;
+        /**
+         * An array of arbitrary tags (key-value pairs) to associate with the stage.
+         */
         tags?: outputs.apigateway.DeploymentTag[];
+        /**
+         * The number of burst requests per second that API Gateway permits across all APIs, stages, and methods in your AWS account.
+         */
         throttlingBurstLimit?: number;
+        /**
+         * The number of steady-state requests per second that API Gateway permits across all APIs, stages, and methods in your AWS account.
+         */
         throttlingRateLimit?: number;
+        /**
+         * Specifies whether active tracing with X-ray is enabled for this stage.
+         */
         tracingEnabled?: boolean;
+        /**
+         * A map that defines the stage variables. Variable names must consist of alphanumeric characters, and the values must match the following regular expression: [A-Za-z0-9-._~:/?#&=,]+. 
+         */
         variables?: any;
     }
 
     export interface DeploymentTag {
+        /**
+         * The key name of the tag
+         */
         key: string;
+        /**
+         * The value for the tag
+         */
         value: string;
     }
 
@@ -504,6 +667,8 @@ export namespace apigateway {
     }
 
     export interface DomainNameMutualTlsAuthentication {
+        certificateRevocationCheckType?: string;
+        certificateRevocationSourceUri?: string;
         truststoreUri?: string;
         truststoreVersion?: string;
     }
@@ -3467,77 +3632,26 @@ export namespace autoscaling {
         min?: number;
     }
 
-    /**
-     * BlockDevice is a subproperty of BlockDeviceMapping that describes an Amazon EBS volume.
-     */
     export interface LaunchConfigurationBlockDevice {
-        /**
-         * Indicates whether the volume is deleted on instance termination. 
-         */
         deleteOnTermination?: boolean;
-        /**
-         * Specifies whether the volume should be encrypted. 
-         */
         encrypted?: boolean;
-        /**
-         * The number of input/output (I/O) operations per second (IOPS) to provision for the volume. 
-         */
         iops?: number;
-        /**
-         * The snapshot ID of the volume to use.
-         */
         snapshotId?: string;
-        /**
-         * The throughput (MiBps) to provision for a gp3 volume.
-         */
         throughput?: number;
-        /**
-         * The volume size, in GiBs.
-         */
         volumeSize?: number;
-        /**
-         * The volume type.
-         */
         volumeType?: string;
     }
 
-    /**
-     * BlockDeviceMapping is a property of AWS::AutoScaling::LaunchConfiguration that describes a block device mapping for an Auto Scaling group.
-     */
     export interface LaunchConfigurationBlockDeviceMapping {
-        /**
-         * The device name exposed to the EC2 instance (for example, /dev/sdh or xvdh). 
-         */
         deviceName: string;
-        /**
-         * Parameters used to automatically set up EBS volumes when an instance is launched.
-         */
         ebs?: outputs.autoscaling.LaunchConfigurationBlockDevice;
-        /**
-         * Setting this value to true suppresses the specified device included in the block device mapping of the AMI.
-         */
         noDevice?: boolean;
-        /**
-         * The name of the virtual device.
-         */
         virtualName?: string;
     }
 
-    /**
-     * MetadataOptions is a property of AWS::AutoScaling::LaunchConfiguration that describes metadata options for the instances.
-     */
     export interface LaunchConfigurationMetadataOptions {
-        /**
-         * This parameter enables or disables the HTTP metadata endpoint on your instances.
-         */
         httpEndpoint?: string;
-        /**
-         * The desired HTTP PUT response hop limit for instance metadata requests.
-         */
         httpPutResponseHopLimit?: number;
-        /**
-         * The state of token usage for your instance metadata requests.
-         */
         httpTokens?: string;
     }
 
@@ -8435,6 +8549,12 @@ export namespace ec2 {
         value: string;
     }
 
+    export interface DestinationOptionsProperties {
+        fileFormat?: enums.ec2.FlowLogDestinationOptionsPropertiesFileFormat;
+        hiveCompatiblePartitions: boolean;
+        perHourPartition: boolean;
+    }
+
     export interface EC2FleetAcceleratorCountRequest {
         max?: number;
         min?: number;
@@ -8590,6 +8710,65 @@ export namespace ec2 {
 
     export interface FlowLogTag {
         key: string;
+        value: string;
+    }
+
+    /**
+     * The regions IPAM is enabled for. Allows pools to be created in these regions, as well as enabling monitoring
+     */
+    export interface IPAMIpamOperatingRegion {
+        /**
+         * The name of the region.
+         */
+        regionName: string;
+    }
+
+    /**
+     * An address space to be inserted into this pool. All allocations must be made from this address space.
+     */
+    export interface IPAMPoolProvisionedCidr {
+        cidr: string;
+    }
+
+    /**
+     * A key-value pair to associate with a resource.
+     */
+    export interface IPAMPoolTag {
+        /**
+         * The key name of the tag. You can specify a value that is 1 to 128 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -.
+         */
+        key: string;
+        /**
+         * The value for the tag. You can specify a value that is 0 to 256 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -.
+         */
+        value: string;
+    }
+
+    /**
+     * A key-value pair to associate with a resource.
+     */
+    export interface IPAMScopeTag {
+        /**
+         * The key name of the tag. You can specify a value that is 1 to 128 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -.
+         */
+        key: string;
+        /**
+         * The value for the tag. You can specify a value that is 0 to 256 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -.
+         */
+        value: string;
+    }
+
+    /**
+     * A key-value pair to associate with a resource.
+     */
+    export interface IPAMTag {
+        /**
+         * The key name of the tag. You can specify a value that is 1 to 128 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -.
+         */
+        key: string;
+        /**
+         * The value for the tag. You can specify a value that is 0 to 256 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -.
+         */
         value: string;
     }
 
@@ -10896,6 +11075,7 @@ export namespace emr {
         autoScalingPolicy?: outputs.emr.ClusterAutoScalingPolicy;
         bidPrice?: string;
         configurations?: outputs.emr.ClusterConfiguration[];
+        customAmiId?: string;
         ebsConfiguration?: outputs.emr.ClusterEbsConfiguration;
         instanceCount: number;
         instanceType: string;
@@ -10907,6 +11087,7 @@ export namespace emr {
         bidPrice?: string;
         bidPriceAsPercentageOfOnDemandPrice?: number;
         configurations?: outputs.emr.ClusterConfiguration[];
+        customAmiId?: string;
         ebsConfiguration?: outputs.emr.ClusterEbsConfiguration;
         instanceType: string;
         weightedCapacity?: number;
@@ -11042,6 +11223,7 @@ export namespace emr {
         bidPrice?: string;
         bidPriceAsPercentageOfOnDemandPrice?: number;
         configurations?: outputs.emr.InstanceFleetConfigConfiguration[];
+        customAmiId?: string;
         ebsConfiguration?: outputs.emr.InstanceFleetConfigEbsConfiguration;
         instanceType: string;
         weightedCapacity?: number;
@@ -11390,6 +11572,160 @@ export namespace eventschemas {
 
     export interface SchemaTagsEntry {
         key: string;
+        value: string;
+    }
+
+}
+
+export namespace evidently {
+    export interface ExperimentMetricGoalObject {
+        desiredChange: enums.evidently.ExperimentMetricGoalObjectDesiredChange;
+        /**
+         * The JSON path to reference the entity id in the event.
+         */
+        entityIdKey: string;
+        /**
+         * Event patterns have the same structure as the events they match. Rules use event patterns to select events. An event pattern either matches an event or it doesn't.
+         */
+        eventPattern: string;
+        metricName: string;
+        unitLabel?: string;
+        /**
+         * The JSON path to reference the numerical metric value in the event.
+         */
+        valueKey: string;
+    }
+
+    export interface ExperimentOnlineAbConfigObject {
+        controlTreatmentName?: string;
+        treatmentWeights?: outputs.evidently.ExperimentTreatmentToWeight[];
+    }
+
+    /**
+     * A key-value pair to associate with a resource.
+     */
+    export interface ExperimentTag {
+        /**
+         * The key name of the tag. You can specify a value that is 1 to 128 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -.
+         */
+        key: string;
+        /**
+         * The value for the tag. You can specify a value that is 0 to 256 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -.
+         */
+        value: string;
+    }
+
+    export interface ExperimentTreatmentObject {
+        description?: string;
+        feature: string;
+        treatmentName: string;
+        variation: string;
+    }
+
+    export interface ExperimentTreatmentToWeight {
+        splitWeight: number;
+        treatment: string;
+    }
+
+    export interface FeatureEntityOverride {
+        entityId?: string;
+        variation?: string;
+    }
+
+    /**
+     * A key-value pair to associate with a resource.
+     */
+    export interface FeatureTag {
+        /**
+         * The key name of the tag. You can specify a value that is 1 to 128 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -.
+         */
+        key: string;
+        /**
+         * The value for the tag. You can specify a value that is 0 to 256 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -.
+         */
+        value: string;
+    }
+
+    export interface FeatureVariationObject {
+        booleanValue?: boolean;
+        doubleValue?: number;
+        longValue?: number;
+        stringValue?: string;
+        variationName?: string;
+    }
+
+    export interface LaunchGroupObject {
+        description?: string;
+        feature: string;
+        groupName: string;
+        variation: string;
+    }
+
+    export interface LaunchGroupToWeight {
+        groupName: string;
+        splitWeight: number;
+    }
+
+    export interface LaunchMetricDefinitionObject {
+        /**
+         * The JSON path to reference the entity id in the event.
+         */
+        entityIdKey: string;
+        /**
+         * Event patterns have the same structure as the events they match. Rules use event patterns to select events. An event pattern either matches an event or it doesn't.
+         */
+        eventPattern: string;
+        metricName: string;
+        unitLabel?: string;
+        /**
+         * The JSON path to reference the numerical metric value in the event.
+         */
+        valueKey: string;
+    }
+
+    export interface LaunchStepConfig {
+        groupWeights: outputs.evidently.LaunchGroupToWeight[];
+        startTime: string;
+    }
+
+    /**
+     * A key-value pair to associate with a resource.
+     */
+    export interface LaunchTag {
+        /**
+         * The key name of the tag. You can specify a value that is 1 to 128 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -.
+         */
+        key: string;
+        /**
+         * The value for the tag. You can specify a value that is 0 to 256 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -.
+         */
+        value: string;
+    }
+
+    /**
+     * Destinations for data.
+     */
+    export interface ProjectDataDeliveryObject {
+        logGroup?: string;
+        s3?: outputs.evidently.ProjectS3Destination;
+    }
+
+    export interface ProjectS3Destination {
+        bucketName: string;
+        prefix?: string;
+    }
+
+    /**
+     * A key-value pair to associate with a resource.
+     */
+    export interface ProjectTag {
+        /**
+         * The key name of the tag. You can specify a value that is 1 to 128 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -.
+         */
+        key: string;
+        /**
+         * The value for the tag. You can specify a value that is 0 to 256 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -.
+         */
         value: string;
     }
 
@@ -11764,6 +12100,11 @@ export namespace fsx {
         fileShareAccessAuditLogLevel: string;
     }
 
+    export interface FileSystemClientConfigurations {
+        clients?: string;
+        options?: string[];
+    }
+
     export interface FileSystemDiskIopsConfiguration {
         iops?: number;
         mode?: string;
@@ -11784,6 +12125,10 @@ export namespace fsx {
         weeklyMaintenanceStartTime?: string;
     }
 
+    export interface FileSystemNfsExports {
+        clientConfigurations?: outputs.fsx.FileSystemClientConfigurations[];
+    }
+
     export interface FileSystemOntapConfiguration {
         automaticBackupRetentionDays?: number;
         dailyAutomaticBackupStartTime?: string;
@@ -11795,6 +12140,26 @@ export namespace fsx {
         routeTableIds?: string[];
         throughputCapacity?: number;
         weeklyMaintenanceStartTime?: string;
+    }
+
+    export interface FileSystemOpenZFSConfiguration {
+        automaticBackupRetentionDays?: number;
+        copyTagsToBackups?: boolean;
+        copyTagsToVolumes?: boolean;
+        dailyAutomaticBackupStartTime?: string;
+        deploymentType: string;
+        diskIopsConfiguration?: outputs.fsx.FileSystemDiskIopsConfiguration;
+        rootVolumeConfiguration?: outputs.fsx.FileSystemRootVolumeConfiguration;
+        throughputCapacity?: number;
+        weeklyMaintenanceStartTime?: string;
+    }
+
+    export interface FileSystemRootVolumeConfiguration {
+        copyTagsToSnapshots?: boolean;
+        dataCompressionType?: string;
+        nfsExports?: outputs.fsx.FileSystemNfsExports[];
+        readOnly?: boolean;
+        userAndGroupQuotas?: outputs.fsx.FileSystemUserAndGroupQuotas[];
     }
 
     export interface FileSystemSelfManagedActiveDirectoryConfiguration {
@@ -11809,6 +12174,12 @@ export namespace fsx {
     export interface FileSystemTag {
         key: string;
         value: string;
+    }
+
+    export interface FileSystemUserAndGroupQuotas {
+        id?: number;
+        storageCapacityQuotaGiB?: number;
+        type?: string;
     }
 
     export interface FileSystemWindowsConfiguration {
@@ -13346,6 +13717,14 @@ export namespace imagebuilder {
      * Launch permissions can be used to configure which AWS accounts can use the AMI to launch instances.
      */
     export interface DistributionConfigurationDistributionAmiDistributionConfigurationPropertiesLaunchPermissionConfigurationProperties {
+        /**
+         * The ARN for an Amazon Web Services Organization that you want to share your AMI with.
+         */
+        organizationArns?: string[];
+        /**
+         * The ARN for an Organizations organizational unit (OU) that you want to share your AMI with.
+         */
+        organizationalUnitArns?: string[];
         /**
          * The name of the group.
          */
@@ -16146,6 +16525,16 @@ export namespace kinesis {
     }
 
     /**
+     * When specified, enables or updates the mode of stream. Default is PROVISIONED.
+     */
+    export interface StreamModeDetails {
+        /**
+         * The mode of the stream
+         */
+        streamMode: enums.kinesis.StreamModeDetailsStreamMode;
+    }
+
+    /**
      * An arbitrary set of tags (key-value pairs) to associate with the Kinesis stream.
      */
     export interface StreamTag {
@@ -17155,6 +17544,686 @@ export namespace lambda {
 
 }
 
+export namespace lex {
+    /**
+     * The location of audio log files collected when conversation logging is enabled for a bot.
+     */
+    export interface BotAliasAudioLogDestination {
+        s3Bucket?: outputs.lex.BotAliasS3BucketLogDestination;
+    }
+
+    /**
+     * Settings for logging audio of conversations between Amazon Lex and a user. You specify whether to log audio and the Amazon S3 bucket where the audio file is stored.
+     */
+    export interface BotAliasAudioLogSetting {
+        destination: outputs.lex.BotAliasAudioLogDestination;
+        enabled: boolean;
+    }
+
+    export interface BotAliasCloudWatchLogGroupLogDestination {
+        /**
+         * A string used to identify this tag
+         */
+        cloudWatchLogGroupArn: string;
+        /**
+         * A string containing the value for the tag
+         */
+        logPrefix: string;
+    }
+
+    /**
+     * Contains information about code hooks that Amazon Lex calls during a conversation.
+     */
+    export interface BotAliasCodeHookSpecification {
+        lambdaCodeHook: outputs.lex.BotAliasLambdaCodeHook;
+    }
+
+    /**
+     * Contains information about code hooks that Amazon Lex calls during a conversation.
+     */
+    export interface BotAliasConversationLogSettings {
+        audioLogSettings?: outputs.lex.BotAliasAudioLogSetting[];
+        textLogSettings?: outputs.lex.BotAliasTextLogSetting[];
+    }
+
+    /**
+     * Contains information about code hooks that Amazon Lex calls during a conversation.
+     */
+    export interface BotAliasLambdaCodeHook {
+        /**
+         * The version of the request-response that you want Amazon Lex to use to invoke your Lambda function.
+         */
+        codeHookInterfaceVersion: string;
+        /**
+         * The Amazon Resource Name (ARN) of the Lambda function.
+         */
+        lambdaArn: string;
+    }
+
+    /**
+     * You can use this parameter to specify a specific Lambda function to run different functions in different locales.
+     */
+    export interface BotAliasLocaleSettings {
+        codeHookSpecification?: outputs.lex.BotAliasCodeHookSpecification;
+        /**
+         * Whether the Lambda code hook is enabled
+         */
+        enabled: boolean;
+    }
+
+    /**
+     * A locale setting in alias
+     */
+    export interface BotAliasLocaleSettingsItem {
+        botAliasLocaleSetting?: outputs.lex.BotAliasLocaleSettings;
+        /**
+         * A string used to identify the locale
+         */
+        localeId?: string;
+    }
+
+    /**
+     * Specifies an Amazon S3 bucket for logging audio conversations
+     */
+    export interface BotAliasS3BucketLogDestination {
+        /**
+         * The Amazon Resource Name (ARN) of an AWS Key Management Service (KMS) key for encrypting audio log files stored in an S3 bucket.
+         */
+        kmsKeyArn?: string;
+        /**
+         * The Amazon S3 key of the deployment package.
+         */
+        logPrefix: string;
+        /**
+         * The Amazon Resource Name (ARN) of an Amazon S3 bucket where audio log files are stored.
+         */
+        s3BucketArn: string;
+    }
+
+    /**
+     * A label for tagging Lex resources
+     */
+    export interface BotAliasTag {
+        /**
+         * A string used to identify this tag
+         */
+        key: string;
+        /**
+         * A string containing the value for the tag
+         */
+        value: string;
+    }
+
+    /**
+     * Defines the Amazon CloudWatch Logs destination log group for conversation text logs.
+     */
+    export interface BotAliasTextLogDestination {
+        cloudWatch?: outputs.lex.BotAliasCloudWatchLogGroupLogDestination;
+    }
+
+    /**
+     * Contains information about code hooks that Amazon Lex calls during a conversation.
+     */
+    export interface BotAliasTextLogSetting {
+        destination?: outputs.lex.BotAliasTextLogDestination;
+        enabled?: boolean;
+    }
+
+    /**
+     * A button to use on a response card used to gather slot values from a user.
+     */
+    export interface BotButton {
+        /**
+         * The text that appears on the button.
+         */
+        text: string;
+        /**
+         * The value returned to Amazon Lex when the user chooses this button.
+         */
+        value: string;
+    }
+
+    /**
+     * A message in a custom format defined by the client application.
+     */
+    export interface BotCustomPayload {
+        /**
+         * The string that is sent to your application.
+         */
+        value: string;
+    }
+
+    /**
+     * Settings that determine the Lambda function that Amazon Lex uses for processing user responses.
+     */
+    export interface BotDialogCodeHookSetting {
+        enabled: boolean;
+    }
+
+    /**
+     * Provides information about the external source of the slot type's definition.
+     */
+    export interface BotExternalSourceSetting {
+        grammarSlotTypeSetting?: outputs.lex.BotGrammarSlotTypeSetting;
+    }
+
+    /**
+     * Settings that determine if a Lambda function should be invoked to fulfill a specific intent.
+     */
+    export interface BotFulfillmentCodeHookSetting {
+        enabled: boolean;
+        fulfillmentUpdatesSpecification?: outputs.lex.BotFulfillmentUpdatesSpecification;
+        postFulfillmentStatusSpecification?: outputs.lex.BotPostFulfillmentStatusSpecification;
+    }
+
+    /**
+     * Provides settings for a message that is sent to the user when a fulfillment Lambda function starts running.
+     */
+    export interface BotFulfillmentStartResponseSpecification {
+        /**
+         * Determines whether the user can interrupt the start message while it is playing.
+         */
+        allowInterrupt?: boolean;
+        /**
+         * The delay between when the Lambda fulfillment function starts running and the start message is played. If the Lambda function returns before the delay is over, the start message isn't played.
+         */
+        delayInSeconds: number;
+        messageGroups: outputs.lex.BotMessageGroup[];
+    }
+
+    /**
+     * Provides settings for a message that is sent periodically to the user while a fulfillment Lambda function is running.
+     */
+    export interface BotFulfillmentUpdateResponseSpecification {
+        /**
+         * Determines whether the user can interrupt an update message while it is playing.
+         */
+        allowInterrupt?: boolean;
+        /**
+         * The frequency that a message is sent to the user. When the period ends, Amazon Lex chooses a message from the message groups and plays it to the user. If the fulfillment Lambda returns before the first period ends, an update message is not played to the user.
+         */
+        frequencyInSeconds: number;
+        messageGroups: outputs.lex.BotMessageGroup[];
+    }
+
+    /**
+     * Provides information for updating the user on the progress of fulfilling an intent.
+     */
+    export interface BotFulfillmentUpdatesSpecification {
+        /**
+         * Determines whether fulfillment updates are sent to the user. When this field is true, updates are sent.
+         */
+        active: boolean;
+        startResponse?: outputs.lex.BotFulfillmentStartResponseSpecification;
+        /**
+         * The length of time that the fulfillment Lambda function should run before it times out.
+         */
+        timeoutInSeconds?: number;
+        updateResponse?: outputs.lex.BotFulfillmentUpdateResponseSpecification;
+    }
+
+    /**
+     * Settings required for a slot type based on a grammar that you provide.
+     */
+    export interface BotGrammarSlotTypeSetting {
+        source?: outputs.lex.BotGrammarSlotTypeSource;
+    }
+
+    /**
+     * Describes the Amazon S3 bucket name and location for the grammar that is the source for the slot type.
+     */
+    export interface BotGrammarSlotTypeSource {
+        /**
+         * The Amazon KMS key required to decrypt the contents of the grammar, if any.
+         */
+        kmsKeyArn?: string;
+        /**
+         * The name of the S3 bucket that contains the grammar source.
+         */
+        s3BucketName: string;
+        /**
+         * The path to the grammar in the S3 bucket.
+         */
+        s3ObjectKey: string;
+    }
+
+    /**
+     * A message that defines a response card that the client application can show to the user.
+     */
+    export interface BotImageResponseCard {
+        /**
+         * A list of buttons that should be displayed on the response card.
+         */
+        buttons?: outputs.lex.BotButton[];
+        /**
+         * The URL of an image to display on the response card.
+         */
+        imageUrl?: string;
+        /**
+         * The subtitle to display on the response card.
+         */
+        subtitle?: string;
+        /**
+         * The title to display on the response card.
+         */
+        title: string;
+    }
+
+    /**
+     * InputContext specified for the intent.
+     */
+    export interface BotInputContext {
+        /**
+         * The name of the context.
+         */
+        name: string;
+    }
+
+    /**
+     * An intent represents an action that the user wants to perform. You create a bot to support one or more related intents.
+     */
+    export interface BotIntent {
+        description?: string;
+        dialogCodeHook?: outputs.lex.BotDialogCodeHookSetting;
+        fulfillmentCodeHook?: outputs.lex.BotFulfillmentCodeHookSetting;
+        inputContexts?: outputs.lex.BotInputContext[];
+        intentClosingSetting?: outputs.lex.BotIntentClosingSetting;
+        intentConfirmationSetting?: outputs.lex.BotIntentConfirmationSetting;
+        kendraConfiguration?: outputs.lex.BotKendraConfiguration;
+        name: string;
+        outputContexts?: outputs.lex.BotOutputContext[];
+        parentIntentSignature?: string;
+        sampleUtterances?: outputs.lex.BotSampleUtterance[];
+        slotPriorities?: outputs.lex.BotSlotPriority[];
+        /**
+         * List of slots
+         */
+        slots?: outputs.lex.BotSlot[];
+    }
+
+    /**
+     * Response that Amazon Lex sends to the user when the intent is closed.
+     */
+    export interface BotIntentClosingSetting {
+        closingResponse: outputs.lex.BotResponseSpecification;
+        isActive?: boolean;
+    }
+
+    /**
+     * Prompts that Amazon Lex sends to the user to confirm the completion of an intent.
+     */
+    export interface BotIntentConfirmationSetting {
+        declinationResponse: outputs.lex.BotResponseSpecification;
+        isActive?: boolean;
+        promptSpecification: outputs.lex.BotPromptSpecification;
+    }
+
+    /**
+     * Configuration for searching a Amazon Kendra index specified for the intent.
+     */
+    export interface BotKendraConfiguration {
+        kendraIndex: string;
+        queryFilterString?: string;
+        /**
+         * Determines whether the AMAZON.KendraSearchIntent intent uses a custom query string to query the Amazon Kendra index.
+         */
+        queryFilterStringEnabled?: boolean;
+    }
+
+    /**
+     * A locale in the bot, which contains the intents and slot types that the bot uses in conversations with users in the specified language and locale.
+     */
+    export interface BotLocale {
+        description?: string;
+        /**
+         * List of intents
+         */
+        intents?: outputs.lex.BotIntent[];
+        localeId: string;
+        nluConfidenceThreshold: number;
+        /**
+         * List of SlotTypes
+         */
+        slotTypes?: outputs.lex.BotSlotType[];
+        voiceSettings?: outputs.lex.BotVoiceSettings;
+    }
+
+    /**
+     * The primary message that Amazon Lex should send to the user.
+     */
+    export interface BotMessage {
+        customPayload?: outputs.lex.BotCustomPayload;
+        imageResponseCard?: outputs.lex.BotImageResponseCard;
+        plainTextMessage?: outputs.lex.BotPlainTextMessage;
+        sSMLMessage?: outputs.lex.BotSSMLMessage;
+    }
+
+    /**
+     * One or more messages that Amazon Lex can send to the user.
+     */
+    export interface BotMessageGroup {
+        message: outputs.lex.BotMessage;
+        /**
+         * Message variations to send to the user.
+         */
+        variations?: outputs.lex.BotMessage[];
+    }
+
+    /**
+     * Indicates whether a slot can return multiple values.
+     */
+    export interface BotMultipleValuesSetting {
+        allowMultipleValues?: boolean;
+    }
+
+    /**
+     * Determines whether Amazon Lex obscures slot values in conversation logs.
+     */
+    export interface BotObfuscationSetting {
+        /**
+         * Value that determines whether Amazon Lex obscures slot values in conversation logs. The default is to obscure the values.
+         */
+        obfuscationSettingType: enums.lex.BotObfuscationSettingObfuscationSettingType;
+    }
+
+    /**
+     * A session context that is activated when an intent is fulfilled.
+     */
+    export interface BotOutputContext {
+        name: string;
+        timeToLiveInSeconds: number;
+        turnsToLive: number;
+    }
+
+    /**
+     * A message in plain text format.
+     */
+    export interface BotPlainTextMessage {
+        /**
+         * The message to send to the user.
+         */
+        value: string;
+    }
+
+    /**
+     * Provides information for updating the user on the progress of fulfilling an intent.
+     */
+    export interface BotPostFulfillmentStatusSpecification {
+        failureResponse?: outputs.lex.BotResponseSpecification;
+        successResponse?: outputs.lex.BotResponseSpecification;
+        timeoutResponse?: outputs.lex.BotResponseSpecification;
+    }
+
+    /**
+     * Prompts the user to confirm the intent.
+     */
+    export interface BotPromptSpecification {
+        /**
+         * Indicates whether the user can interrupt a speech prompt from the bot.
+         */
+        allowInterrupt?: boolean;
+        maxRetries: number;
+        messageGroupsList: outputs.lex.BotMessageGroup[];
+    }
+
+    /**
+     * A list of message groups that Amazon Lex uses to respond the user input.
+     */
+    export interface BotResponseSpecification {
+        /**
+         * Indicates whether the user can interrupt a speech prompt from the bot.
+         */
+        allowInterrupt?: boolean;
+        messageGroupsList: outputs.lex.BotMessageGroup[];
+    }
+
+    /**
+     * S3 location of bot definitions zip file, if it's not defined inline in CloudFormation.
+     */
+    export interface BotS3Location {
+        /**
+         * An Amazon S3 bucket in the same AWS Region as your function. The bucket can be in a different AWS account.
+         */
+        s3Bucket: string;
+        /**
+         * The Amazon S3 key of the deployment package.
+         */
+        s3ObjectKey: string;
+        /**
+         * For versioned objects, the version of the deployment package object to use. If not specified, the current object version will be used.
+         */
+        s3ObjectVersion?: string;
+    }
+
+    /**
+     * A message in Speech Synthesis Markup Language (SSML).
+     */
+    export interface BotSSMLMessage {
+        /**
+         * The SSML text that defines the prompt.
+         */
+        value: string;
+    }
+
+    /**
+     * A sample utterance that invokes an intent or respond to a slot elicitation prompt.
+     */
+    export interface BotSampleUtterance {
+        utterance: string;
+    }
+
+    /**
+     * Defines one of the values for a slot type.
+     */
+    export interface BotSampleValue {
+        /**
+         * The value that can be used for a slot type.
+         */
+        value: string;
+    }
+
+    /**
+     * A slot is a variable needed to fulfill an intent, where an intent can require zero or more slots.
+     */
+    export interface BotSlot {
+        description?: string;
+        multipleValuesSetting?: outputs.lex.BotMultipleValuesSetting;
+        name: string;
+        obfuscationSetting?: outputs.lex.BotObfuscationSetting;
+        slotTypeName: string;
+        valueElicitationSetting: outputs.lex.BotSlotValueElicitationSetting;
+    }
+
+    /**
+     * The default value to use when a user doesn't provide a value for a slot.
+     */
+    export interface BotSlotDefaultValue {
+        /**
+         * The default value to use when a user doesn't provide a value for a slot.
+         */
+        defaultValue: string;
+    }
+
+    /**
+     * A list of values that Amazon Lex should use as the default value for a slot.
+     */
+    export interface BotSlotDefaultValueSpecification {
+        /**
+         * A list of slot default values
+         */
+        defaultValueList: outputs.lex.BotSlotDefaultValue[];
+    }
+
+    /**
+     * The priority that Amazon Lex should use when eliciting slot values from a user.
+     */
+    export interface BotSlotPriority {
+        priority: number;
+        /**
+         * The name of the slot.
+         */
+        slotName: string;
+    }
+
+    /**
+     * A custom, extended built-in or a grammar slot type.
+     */
+    export interface BotSlotType {
+        description?: string;
+        externalSourceSetting?: outputs.lex.BotExternalSourceSetting;
+        name: string;
+        parentSlotTypeSignature?: string;
+        slotTypeValues?: outputs.lex.BotSlotTypeValue[];
+        valueSelectionSetting?: outputs.lex.BotSlotValueSelectionSetting;
+    }
+
+    /**
+     * Value that the slot type can take.
+     */
+    export interface BotSlotTypeValue {
+        sampleValue: outputs.lex.BotSampleValue;
+        synonyms?: outputs.lex.BotSampleValue[];
+    }
+
+    /**
+     * Settings that you can use for eliciting a slot value.
+     */
+    export interface BotSlotValueElicitationSetting {
+        /**
+         * A list of default values for a slot.
+         */
+        defaultValueSpecification?: outputs.lex.BotSlotDefaultValueSpecification;
+        /**
+         * The prompt that Amazon Lex uses to elicit the slot value from the user.
+         */
+        promptSpecification?: outputs.lex.BotPromptSpecification;
+        /**
+         * If you know a specific pattern that users might respond to an Amazon Lex request for a slot value, you can provide those utterances to improve accuracy.
+         */
+        sampleUtterances?: outputs.lex.BotSampleUtterance[];
+        /**
+         * Specifies whether the slot is required or optional.
+         */
+        slotConstraint: enums.lex.BotSlotConstraint;
+        /**
+         * Specifies the prompts that Amazon Lex uses while a bot is waiting for customer input.
+         */
+        waitAndContinueSpecification?: outputs.lex.BotWaitAndContinueSpecification;
+    }
+
+    /**
+     * A regular expression used to validate the value of a slot.
+     */
+    export interface BotSlotValueRegexFilter {
+        /**
+         * Regex pattern
+         */
+        pattern: string;
+    }
+
+    /**
+     * Contains settings used by Amazon Lex to select a slot value.
+     */
+    export interface BotSlotValueSelectionSetting {
+        regexFilter?: outputs.lex.BotSlotValueRegexFilter;
+        resolutionStrategy: enums.lex.BotSlotValueResolutionStrategy;
+    }
+
+    /**
+     * StillWaitingResponseSpecification.
+     */
+    export interface BotStillWaitingResponseSpecification {
+        /**
+         * Indicates whether the user can interrupt a speech prompt from the bot.
+         */
+        allowInterrupt?: boolean;
+        frequencyInSeconds: number;
+        messageGroupsList: outputs.lex.BotMessageGroup[];
+        timeoutInSeconds: number;
+    }
+
+    /**
+     * A key-value pair for tagging Lex resources
+     */
+    export interface BotTag {
+        /**
+         * The key name of the tag. You can specify a value that is 1 to 128 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -.
+         */
+        key: string;
+        /**
+         * The value for the tag. You can specify a value that is 0 to 256 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -.
+         */
+        value: string;
+    }
+
+    /**
+     * The version of a bot used for a bot locale.
+     */
+    export interface BotVersionLocaleDetails {
+        sourceBotVersion: string;
+    }
+
+    export interface BotVersionLocaleSpecification {
+        botVersionLocaleDetails: outputs.lex.BotVersionLocaleDetails;
+        localeId: string;
+    }
+
+    /**
+     * Settings for using an Amazon Polly voice to communicate with a user.
+     */
+    export interface BotVoiceSettings {
+        /**
+         * The Amazon Polly voice ID that Amazon Lex uses for voice interaction with the user.
+         */
+        voiceId: string;
+    }
+
+    /**
+     * The prompts that Amazon Lex uses while a bot is waiting for customer input.
+     */
+    export interface BotWaitAndContinueSpecification {
+        /**
+         * The response that Amazon Lex sends to indicate that the bot is ready to continue the conversation.
+         */
+        continueResponse: outputs.lex.BotResponseSpecification;
+        /**
+         * Specifies whether the bot will wait for a user to respond.
+         */
+        isActive?: boolean;
+        /**
+         * The response that Amazon Lex sends periodically to the user to indicate that the bot is still waiting for input from the user.
+         */
+        stillWaitingResponse?: outputs.lex.BotStillWaitingResponseSpecification;
+        /**
+         * The response that Amazon Lex sends to indicate that the bot is waiting for the conversation to continue.
+         */
+        waitingResponse: outputs.lex.BotResponseSpecification;
+    }
+
+    /**
+     * Data privacy setting of the Bot.
+     */
+    export interface DataPrivacyProperties {
+        childDirected: boolean;
+    }
+
+    /**
+     * A resource policy to add to the resource. The policy is a JSON structure following the IAM syntax that contains one or more statements that define the policy.
+     */
+    export interface ResourcePolicyPolicy {
+    }
+
+    /**
+     * Determines whether Amazon Lex will use Amazon Comprehend to detect the sentiment of user utterances.
+     */
+    export interface SentimentAnalysisSettingsProperties {
+        /**
+         * Enable to call Amazon Comprehend for Sentiment natively within Lex
+         */
+        detectSentiment: boolean;
+    }
+}
+
 export namespace licensemanager {
     export interface LicenseBorrowConfiguration {
         allowEarlyCheckIn: boolean;
@@ -18152,12 +19221,18 @@ export namespace medialive {
         audioSelectorName?: string;
         audioType?: string;
         audioTypeControl?: string;
+        audioWatermarkingSettings?: outputs.medialive.ChannelAudioWatermarkSettings;
         codecSettings?: outputs.medialive.ChannelAudioCodecSettings;
         languageCode?: string;
         languageCodeControl?: string;
         name?: string;
         remixSettings?: outputs.medialive.ChannelRemixSettings;
         streamName?: string;
+    }
+
+    export interface ChannelAudioHlsRenditionSelection {
+        groupId?: string;
+        name?: string;
     }
 
     export interface ChannelAudioLanguageSelection {
@@ -18188,6 +19263,7 @@ export namespace medialive {
     }
 
     export interface ChannelAudioSelectorSettings {
+        audioHlsRenditionSelection?: outputs.medialive.ChannelAudioHlsRenditionSelection;
         audioLanguageSelection?: outputs.medialive.ChannelAudioLanguageSelection;
         audioPidSelection?: outputs.medialive.ChannelAudioPidSelection;
         audioTrackSelection?: outputs.medialive.ChannelAudioTrackSelection;
@@ -18204,6 +19280,10 @@ export namespace medialive {
 
     export interface ChannelAudioTrackSelection {
         tracks?: outputs.medialive.ChannelAudioTrack[];
+    }
+
+    export interface ChannelAudioWatermarkSettings {
+        nielsenWatermarksSettings?: outputs.medialive.ChannelNielsenWatermarksSettings;
     }
 
     export interface ChannelAutomaticInputFailoverSettings {
@@ -18349,6 +19429,7 @@ export namespace medialive {
     }
 
     export interface ChannelDvbSubSourceSettings {
+        ocrLanguage?: string;
         pid?: number;
     }
 
@@ -18651,6 +19732,7 @@ export namespace medialive {
         bufferSegments?: number;
         retries?: number;
         retryInterval?: number;
+        scte35Source?: string;
     }
 
     export interface ChannelHlsMediaStoreSettings {
@@ -18906,9 +19988,26 @@ export namespace medialive {
         serverValidation?: string;
     }
 
+    export interface ChannelNielsenCBET {
+        cbetCheckDigitString?: string;
+        cbetStepaside?: string;
+        csid?: string;
+    }
+
     export interface ChannelNielsenConfiguration {
         distributorId?: string;
         nielsenPcmToId3Tagging?: string;
+    }
+
+    export interface ChannelNielsenNaesIiNw {
+        checkDigitString?: string;
+        sid?: number;
+    }
+
+    export interface ChannelNielsenWatermarksSettings {
+        nielsenCbetSettings?: outputs.medialive.ChannelNielsenCBET;
+        nielsenDistributionType?: string;
+        nielsenNaesIiNwSettings?: outputs.medialive.ChannelNielsenNaesIiNw;
     }
 
     export interface ChannelOutput {
@@ -19015,6 +20114,7 @@ export namespace medialive {
     }
 
     export interface ChannelScte27SourceSettings {
+        ocrLanguage?: string;
         pid?: number;
     }
 
@@ -19141,6 +20241,7 @@ export namespace medialive {
     }
 
     export interface ChannelWebvttDestinationSettings {
+        styleControl?: string;
     }
 
     export interface InputDestinationRequest {
@@ -22940,6 +24041,86 @@ export namespace redshift {
 
 }
 
+export namespace refactorspaces {
+    export interface ApplicationApiGatewayProxyInput {
+        endpointType?: enums.refactorspaces.ApplicationApiGatewayEndpointType;
+        stageName?: string;
+    }
+
+    /**
+     * A label for tagging Environment resource
+     */
+    export interface ApplicationTag {
+        /**
+         * A string used to identify this tag
+         */
+        key: string;
+        /**
+         * A string containing the value for the tag
+         */
+        value: string;
+    }
+
+    /**
+     * A label for tagging Environment resource
+     */
+    export interface EnvironmentTag {
+        /**
+         * A string used to identify this tag
+         */
+        key: string;
+        /**
+         * A string containing the value for the tag
+         */
+        value: string;
+    }
+
+    /**
+     * A label for tagging Environment resource
+     */
+    export interface RouteTag {
+        /**
+         * A string used to identify this tag
+         */
+        key: string;
+        /**
+         * A string containing the value for the tag
+         */
+        value: string;
+    }
+
+    export interface RouteUriPathRouteInput {
+        activationState: enums.refactorspaces.RouteActivationState;
+        includeChildPaths?: boolean;
+        methods?: enums.refactorspaces.RouteMethod[];
+        sourcePath?: string;
+    }
+
+    export interface ServiceLambdaEndpointInput {
+        arn: string;
+    }
+
+    /**
+     * A label for tagging Environment resource
+     */
+    export interface ServiceTag {
+        /**
+         * A string used to identify this tag
+         */
+        key: string;
+        /**
+         * A string containing the value for the tag
+         */
+        value: string;
+    }
+
+    export interface ServiceUrlEndpointInput {
+        healthUrl?: string;
+        url: string;
+    }
+
+}
+
 export namespace resiliencehub {
     export interface AppPhysicalResourceId {
         awsAccountId?: string;
@@ -23516,6 +24697,65 @@ export namespace route53resolver {
          * The port at Ip that you want to forward DNS queries to. 
          */
         port?: string;
+    }
+
+}
+
+export namespace rum {
+    /**
+     * AppMonitor configuration
+     */
+    export interface AppMonitorConfiguration {
+        /**
+         * If you set this to true, the RUM web client sets two cookies, a session cookie and a user cookie. The cookies allow the RUM web client to collect data relating to the number of users an application has and the behavior of the application across a sequence of events. Cookies are stored in the top-level domain of the current page.
+         */
+        allowCookies?: boolean;
+        /**
+         * If you set this to true, RUM enables xray tracing for the user sessions that RUM samples. RUM adds an xray trace header to allowed HTTP requests. It also records an xray segment for allowed HTTP requests. You can see traces and segments from these user sessions in the xray console and the CW ServiceLens console.
+         */
+        enableXRay?: boolean;
+        /**
+         * A list of URLs in your website or application to exclude from RUM data collection. You can't include both ExcludedPages and IncludedPages in the same operation.
+         */
+        excludedPages?: string[];
+        /**
+         * A list of pages in the RUM console that are to be displayed with a favorite icon.
+         */
+        favoritePages?: string[];
+        /**
+         * The ARN of the guest IAM role that is attached to the identity pool that is used to authorize the sending of data to RUM.
+         */
+        guestRoleArn?: string;
+        /**
+         * The ID of the identity pool that is used to authorize the sending of data to RUM.
+         */
+        identityPoolId?: string;
+        /**
+         * If this app monitor is to collect data from only certain pages in your application, this structure lists those pages. You can't include both ExcludedPages and IncludedPages in the same operation.
+         */
+        includedPages?: string[];
+        /**
+         * Specifies the percentage of user sessions to use for RUM data collection. Choosing a higher percentage gives you more data but also incurs more costs. The number you specify is the percentage of user sessions that will be used. If you omit this parameter, the default of 10 is used.
+         */
+        sessionSampleRate?: number;
+        /**
+         * An array that lists the types of telemetry data that this app monitor is to collect.
+         */
+        telemetries?: enums.rum.AppMonitorTelemetry[];
+    }
+
+    /**
+     * A key-value pair to associate with a resource.
+     */
+    export interface AppMonitorTag {
+        /**
+         * The key name of the tag. You can specify a value that is 1 to 128 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -. 
+         */
+        key: string;
+        /**
+         * The value for the tag. You can specify a value that is 0 to 256 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -. 
+         */
+        value: string;
     }
 
 }
@@ -25044,7 +26284,13 @@ export namespace sagemaker {
         initialVariantWeight: number;
         instanceType?: string;
         modelName: string;
+        serverlessConfig?: outputs.sagemaker.EndpointConfigServerlessConfig;
         variantName: string;
+    }
+
+    export interface EndpointConfigServerlessConfig {
+        maxConcurrency: number;
+        memorySizeInMB: number;
     }
 
     export interface EndpointConfigTag {
@@ -25335,6 +26581,7 @@ export namespace sagemaker {
         environment?: any;
         image?: string;
         imageConfig?: outputs.sagemaker.ModelImageConfig;
+        inferenceSpecificationName?: string;
         mode?: string;
         modelDataUrl?: string;
         modelPackageName?: string;
@@ -27119,6 +28366,107 @@ export namespace timestream {
     }
 
     /**
+     * Mapping of dimension column name to dimension column value type.
+     */
+    export interface ScheduledQueryDimensionMapping {
+        dimensionValueType: enums.timestream.ScheduledQueryDimensionValueType;
+        name: string;
+    }
+
+    /**
+     * Configuration for where error reports will be placed, how they will be named, and how they will be encrypted.
+     */
+    export interface ScheduledQueryErrorReportConfiguration {
+        s3Configuration: outputs.timestream.ScheduledQueryS3Configuration;
+    }
+
+    /**
+     * Mapping of measure names and measure value columns from the source table to the destination table.
+     */
+    export interface ScheduledQueryMixedMeasureMapping {
+        measureName?: string;
+        measureValueType: enums.timestream.ScheduledQueryMixedMeasureMappingMeasureValueType;
+        multiMeasureAttributeMappings?: outputs.timestream.ScheduledQueryMultiMeasureAttributeMapping[];
+        sourceColumn?: string;
+        targetMeasureName?: string;
+    }
+
+    /**
+     * Mapping of measure value columns from the source table to the destination table.
+     */
+    export interface ScheduledQueryMultiMeasureAttributeMapping {
+        measureValueType: enums.timestream.ScheduledQueryMultiMeasureAttributeMappingMeasureValueType;
+        sourceColumn: string;
+        targetMultiMeasureAttributeName?: string;
+    }
+
+    /**
+     * Mapping of measure value columns from the source table to the destination table.
+     */
+    export interface ScheduledQueryMultiMeasureMappings {
+        multiMeasureAttributeMappings: outputs.timestream.ScheduledQueryMultiMeasureAttributeMapping[];
+        targetMultiMeasureName?: string;
+    }
+
+    /**
+     * Configuration for notification upon scheduled query execution.
+     */
+    export interface ScheduledQueryNotificationConfiguration {
+        snsConfiguration: outputs.timestream.ScheduledQuerySnsConfiguration;
+    }
+
+    /**
+     * S3 configuration for where error reports will be placed, how they will be named, and how they will be encrypted.
+     */
+    export interface ScheduledQueryS3Configuration {
+        bucketName: string;
+        encryptionOption?: enums.timestream.ScheduledQueryEncryptionOption;
+        objectKeyPrefix?: string;
+    }
+
+    /**
+     * Configuration that indicates when the scheduled query is executed.
+     */
+    export interface ScheduledQueryScheduleConfiguration {
+        scheduleExpression: string;
+    }
+
+    /**
+     * SNS configuration for notification upon scheduled query execution.
+     */
+    export interface ScheduledQuerySnsConfiguration {
+        topicArn: string;
+    }
+
+    /**
+     * A key-value pair to associate with a resource.
+     */
+    export interface ScheduledQueryTag {
+        key: string;
+        value: string;
+    }
+
+    /**
+     * Configuration of target destination table to query.
+     */
+    export interface ScheduledQueryTargetConfiguration {
+        timestreamConfiguration: outputs.timestream.ScheduledQueryTimestreamConfiguration;
+    }
+
+    /**
+     * Timestream configuration of destination table to query.
+     */
+    export interface ScheduledQueryTimestreamConfiguration {
+        databaseName: string;
+        dimensionMappings: outputs.timestream.ScheduledQueryDimensionMapping[];
+        measureNameColumn?: string;
+        mixedMeasureMappings?: outputs.timestream.ScheduledQueryMixedMeasureMapping[];
+        multiMeasureMappings?: outputs.timestream.ScheduledQueryMultiMeasureMappings;
+        tableName: string;
+        timeColumn: string;
+    }
+
+    /**
      * You can use the Resource Tags property to apply tags to resources, which can help you identify and categorize those resources.
      */
     export interface TableTag {
@@ -27618,6 +28966,10 @@ export namespace wafv2 {
         textTransformations: outputs.wafv2.RuleGroupTextTransformation[];
     }
 
+    export interface RuleGroupCaptchaConfig {
+        immunityTimeProperty?: outputs.wafv2.RuleGroupImmunityTimeProperty;
+    }
+
     /**
      * HTTP header.
      */
@@ -27721,6 +29073,10 @@ export namespace wafv2 {
         iPSetForwardedIPConfig?: outputs.wafv2.RuleGroupIPSetForwardedIPConfiguration;
     }
 
+    export interface RuleGroupImmunityTimeProperty {
+        immunityTime: number;
+    }
+
     /**
      * Inspect the request body as JSON. The request body immediately follows the request headers.
      */
@@ -27769,6 +29125,12 @@ export namespace wafv2 {
         scopeDownStatement?: outputs.wafv2.RuleGroupStatement;
     }
 
+    export interface RuleGroupRegexMatchStatement {
+        fieldToMatch: outputs.wafv2.RuleGroupFieldToMatch;
+        regexString: string;
+        textTransformations: outputs.wafv2.RuleGroupTextTransformation[];
+    }
+
     export interface RuleGroupRegexPatternSetReferenceStatement {
         arn: string;
         fieldToMatch: outputs.wafv2.RuleGroupFieldToMatch;
@@ -27780,6 +29142,7 @@ export namespace wafv2 {
      */
     export interface RuleGroupRule {
         action?: outputs.wafv2.RuleGroupRuleAction;
+        captchaConfig?: outputs.wafv2.RuleGroupCaptchaConfig;
         name: string;
         priority: number;
         /**
@@ -27803,6 +29166,10 @@ export namespace wafv2 {
          */
         block?: outputs.wafv2.RuleGroupRuleActionBlockProperties;
         /**
+         * Checks valid token exists with request.
+         */
+        captcha?: outputs.wafv2.RuleGroupRuleActionCaptchaProperties;
+        /**
          * Count traffic towards application.
          */
         count?: outputs.wafv2.RuleGroupRuleActionCountProperties;
@@ -27820,6 +29187,13 @@ export namespace wafv2 {
      */
     export interface RuleGroupRuleActionBlockProperties {
         customResponse?: outputs.wafv2.RuleGroupCustomResponse;
+    }
+
+    /**
+     * Checks valid token exists with request.
+     */
+    export interface RuleGroupRuleActionCaptchaProperties {
+        customRequestHandling?: outputs.wafv2.RuleGroupCustomRequestHandling;
     }
 
     /**
@@ -27859,6 +29233,7 @@ export namespace wafv2 {
         notStatement?: outputs.wafv2.RuleGroupNotStatement;
         orStatement?: outputs.wafv2.RuleGroupOrStatement;
         rateBasedStatement?: outputs.wafv2.RuleGroupRateBasedStatement;
+        regexMatchStatement?: outputs.wafv2.RuleGroupRegexMatchStatement;
         regexPatternSetReferenceStatement?: outputs.wafv2.RuleGroupRegexPatternSetReferenceStatement;
         sizeConstraintStatement?: outputs.wafv2.RuleGroupSizeConstraintStatement;
         sqliMatchStatement?: outputs.wafv2.RuleGroupSqliMatchStatement;
@@ -27922,6 +29297,17 @@ export namespace wafv2 {
         searchString?: string;
         searchStringBase64?: string;
         textTransformations: outputs.wafv2.WebACLTextTransformation[];
+    }
+
+    /**
+     * Checks valid token exists with request.
+     */
+    export interface WebACLCaptchaAction {
+        customRequestHandling?: outputs.wafv2.WebACLCustomRequestHandling;
+    }
+
+    export interface WebACLCaptchaConfig {
+        immunityTimeProperty?: outputs.wafv2.WebACLImmunityTimeProperty;
     }
 
     /**
@@ -28049,6 +29435,10 @@ export namespace wafv2 {
         iPSetForwardedIPConfig?: outputs.wafv2.WebACLIPSetForwardedIPConfiguration;
     }
 
+    export interface WebACLImmunityTimeProperty {
+        immunityTime: number;
+    }
+
     /**
      * Inspect the request body as JSON. The request body immediately follows the request headers.
      */
@@ -28115,6 +29505,12 @@ export namespace wafv2 {
         scopeDownStatement?: outputs.wafv2.WebACLStatement;
     }
 
+    export interface WebACLRegexMatchStatement {
+        fieldToMatch: outputs.wafv2.WebACLFieldToMatch;
+        regexString: string;
+        textTransformations: outputs.wafv2.WebACLTextTransformation[];
+    }
+
     export interface WebACLRegexPatternSetReferenceStatement {
         arn: string;
         fieldToMatch: outputs.wafv2.WebACLFieldToMatch;
@@ -28126,6 +29522,7 @@ export namespace wafv2 {
      */
     export interface WebACLRule {
         action?: outputs.wafv2.WebACLRuleAction;
+        captchaConfig?: outputs.wafv2.WebACLCaptchaConfig;
         name: string;
         overrideAction?: outputs.wafv2.WebACLOverrideAction;
         priority: number;
@@ -28143,6 +29540,7 @@ export namespace wafv2 {
     export interface WebACLRuleAction {
         allow?: outputs.wafv2.WebACLAllowAction;
         block?: outputs.wafv2.WebACLBlockAction;
+        captcha?: outputs.wafv2.WebACLCaptchaAction;
         count?: outputs.wafv2.WebACLCountAction;
     }
 
@@ -28182,6 +29580,7 @@ export namespace wafv2 {
         notStatement?: outputs.wafv2.WebACLNotStatement;
         orStatement?: outputs.wafv2.WebACLOrStatement;
         rateBasedStatement?: outputs.wafv2.WebACLRateBasedStatement;
+        regexMatchStatement?: outputs.wafv2.WebACLRegexMatchStatement;
         regexPatternSetReferenceStatement?: outputs.wafv2.WebACLRegexPatternSetReferenceStatement;
         ruleGroupReferenceStatement?: outputs.wafv2.WebACLRuleGroupReferenceStatement;
         sizeConstraintStatement?: outputs.wafv2.WebACLSizeConstraintStatement;
@@ -28218,6 +29617,7 @@ export namespace wafv2 {
         fieldToMatch: outputs.wafv2.WebACLFieldToMatch;
         textTransformations: outputs.wafv2.WebACLTextTransformation[];
     }
+
 }
 
 export namespace wisdom {

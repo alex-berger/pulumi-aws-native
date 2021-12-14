@@ -25,11 +25,13 @@ __all__ = [
     'EC2FleetTargetCapacitySpecificationRequestDefaultTargetCapacityType',
     'EC2FleetTargetCapacitySpecificationRequestTargetCapacityUnitType',
     'EC2FleetType',
+    'FlowLogDestinationOptionsPropertiesFileFormat',
     'FlowLogLogDestinationType',
     'FlowLogResourceType',
     'FlowLogTrafficType',
-    'HostAutoPlacement',
-    'HostRecovery',
+    'IPAMPoolIpamScopeType',
+    'IPAMPoolState',
+    'IPAMScopeIpamScopeType',
     'NetworkInsightsAnalysisStatus',
     'NetworkInsightsPathProtocol',
     'PrefixListAddressFamily',
@@ -51,7 +53,6 @@ __all__ = [
     'SpotFleetSpotCapacityRebalanceReplacementStrategy',
     'SpotFleetSpotPlacementTenancy',
     'SpotFleetTagSpecificationResourceType',
-    'VPCEndpointVpcEndpointType',
 ]
 
 
@@ -216,6 +217,11 @@ class EC2FleetType(str, Enum):
     INSTANT = "instant"
 
 
+class FlowLogDestinationOptionsPropertiesFileFormat(str, Enum):
+    PLAIN_TEXT = "plain-text"
+    PARQUET = "parquet"
+
+
 class FlowLogLogDestinationType(str, Enum):
     """
     Specifies the type of destination to which the flow log data is to be published. Flow log data can be published to CloudWatch Logs or Amazon S3.
@@ -242,20 +248,32 @@ class FlowLogTrafficType(str, Enum):
     REJECT = "REJECT"
 
 
-class HostAutoPlacement(str, Enum):
+class IPAMPoolIpamScopeType(str, Enum):
     """
-    Indicates whether the host accepts any untargeted instance launches that match its instance type configuration, or if it only accepts Host tenancy instance launches that specify its unique host ID.
+    Determines whether this scope contains publicly routable space or space for a private network
     """
-    ON = "on"
-    OFF = "off"
+    PUBLIC = "public"
+    PRIVATE = "private"
 
 
-class HostRecovery(str, Enum):
+class IPAMPoolState(str, Enum):
     """
-    Indicates whether to enable or disable host recovery for the Dedicated Host. Host recovery is disabled by default.
+    The state of this pool. This can be one of the following values: "create-in-progress", "create-complete", "modify-in-progress", "modify-complete", "delete-in-progress", or "delete-complete"
     """
-    ON = "on"
-    OFF = "off"
+    CREATE_IN_PROGRESS = "create-in-progress"
+    CREATE_COMPLETE = "create-complete"
+    MODIFY_IN_PROGRESS = "modify-in-progress"
+    MODIFY_COMPLETE = "modify-complete"
+    DELETE_IN_PROGRESS = "delete-in-progress"
+    DELETE_COMPLETE = "delete-complete"
+
+
+class IPAMScopeIpamScopeType(str, Enum):
+    """
+    Determines whether this scope contains publicly routable space or space for a private network
+    """
+    PUBLIC = "public"
+    PRIVATE = "private"
 
 
 class NetworkInsightsAnalysisStatus(str, Enum):
@@ -434,9 +452,3 @@ class SpotFleetTagSpecificationResourceType(str, Enum):
     VPC_PEERING_CONNECTION = "vpc-peering-connection"
     VPN_CONNECTION = "vpn-connection"
     VPN_GATEWAY = "vpn-gateway"
-
-
-class VPCEndpointVpcEndpointType(str, Enum):
-    INTERFACE = "Interface"
-    GATEWAY = "Gateway"
-    GATEWAY_LOAD_BALANCER = "GatewayLoadBalancer"

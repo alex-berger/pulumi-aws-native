@@ -628,6 +628,34 @@ namespace Pulumi.AwsNative.EC2
         public override string ToString() => _value;
     }
 
+    [EnumType]
+    public readonly struct FlowLogDestinationOptionsPropertiesFileFormat : IEquatable<FlowLogDestinationOptionsPropertiesFileFormat>
+    {
+        private readonly string _value;
+
+        private FlowLogDestinationOptionsPropertiesFileFormat(string value)
+        {
+            _value = value ?? throw new ArgumentNullException(nameof(value));
+        }
+
+        public static FlowLogDestinationOptionsPropertiesFileFormat PlainText { get; } = new FlowLogDestinationOptionsPropertiesFileFormat("plain-text");
+        public static FlowLogDestinationOptionsPropertiesFileFormat Parquet { get; } = new FlowLogDestinationOptionsPropertiesFileFormat("parquet");
+
+        public static bool operator ==(FlowLogDestinationOptionsPropertiesFileFormat left, FlowLogDestinationOptionsPropertiesFileFormat right) => left.Equals(right);
+        public static bool operator !=(FlowLogDestinationOptionsPropertiesFileFormat left, FlowLogDestinationOptionsPropertiesFileFormat right) => !left.Equals(right);
+
+        public static explicit operator string(FlowLogDestinationOptionsPropertiesFileFormat value) => value._value;
+
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override bool Equals(object? obj) => obj is FlowLogDestinationOptionsPropertiesFileFormat other && Equals(other);
+        public bool Equals(FlowLogDestinationOptionsPropertiesFileFormat other) => string.Equals(_value, other._value, StringComparison.Ordinal);
+
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override int GetHashCode() => _value?.GetHashCode() ?? 0;
+
+        public override string ToString() => _value;
+    }
+
     /// <summary>
     /// Specifies the type of destination to which the flow log data is to be published. Flow log data can be published to CloudWatch Logs or Amazon S3.
     /// </summary>
@@ -724,29 +752,29 @@ namespace Pulumi.AwsNative.EC2
     }
 
     /// <summary>
-    /// Indicates whether the host accepts any untargeted instance launches that match its instance type configuration, or if it only accepts Host tenancy instance launches that specify its unique host ID.
+    /// Determines whether this scope contains publicly routable space or space for a private network
     /// </summary>
     [EnumType]
-    public readonly struct HostAutoPlacement : IEquatable<HostAutoPlacement>
+    public readonly struct IPAMPoolIpamScopeType : IEquatable<IPAMPoolIpamScopeType>
     {
         private readonly string _value;
 
-        private HostAutoPlacement(string value)
+        private IPAMPoolIpamScopeType(string value)
         {
             _value = value ?? throw new ArgumentNullException(nameof(value));
         }
 
-        public static HostAutoPlacement On { get; } = new HostAutoPlacement("on");
-        public static HostAutoPlacement Off { get; } = new HostAutoPlacement("off");
+        public static IPAMPoolIpamScopeType Public { get; } = new IPAMPoolIpamScopeType("public");
+        public static IPAMPoolIpamScopeType Private { get; } = new IPAMPoolIpamScopeType("private");
 
-        public static bool operator ==(HostAutoPlacement left, HostAutoPlacement right) => left.Equals(right);
-        public static bool operator !=(HostAutoPlacement left, HostAutoPlacement right) => !left.Equals(right);
+        public static bool operator ==(IPAMPoolIpamScopeType left, IPAMPoolIpamScopeType right) => left.Equals(right);
+        public static bool operator !=(IPAMPoolIpamScopeType left, IPAMPoolIpamScopeType right) => !left.Equals(right);
 
-        public static explicit operator string(HostAutoPlacement value) => value._value;
+        public static explicit operator string(IPAMPoolIpamScopeType value) => value._value;
 
         [EditorBrowsable(EditorBrowsableState.Never)]
-        public override bool Equals(object? obj) => obj is HostAutoPlacement other && Equals(other);
-        public bool Equals(HostAutoPlacement other) => string.Equals(_value, other._value, StringComparison.Ordinal);
+        public override bool Equals(object? obj) => obj is IPAMPoolIpamScopeType other && Equals(other);
+        public bool Equals(IPAMPoolIpamScopeType other) => string.Equals(_value, other._value, StringComparison.Ordinal);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override int GetHashCode() => _value?.GetHashCode() ?? 0;
@@ -755,29 +783,64 @@ namespace Pulumi.AwsNative.EC2
     }
 
     /// <summary>
-    /// Indicates whether to enable or disable host recovery for the Dedicated Host. Host recovery is disabled by default.
+    /// The state of this pool. This can be one of the following values: "create-in-progress", "create-complete", "modify-in-progress", "modify-complete", "delete-in-progress", or "delete-complete"
     /// </summary>
     [EnumType]
-    public readonly struct HostRecovery : IEquatable<HostRecovery>
+    public readonly struct IPAMPoolState : IEquatable<IPAMPoolState>
     {
         private readonly string _value;
 
-        private HostRecovery(string value)
+        private IPAMPoolState(string value)
         {
             _value = value ?? throw new ArgumentNullException(nameof(value));
         }
 
-        public static HostRecovery On { get; } = new HostRecovery("on");
-        public static HostRecovery Off { get; } = new HostRecovery("off");
+        public static IPAMPoolState CreateInProgress { get; } = new IPAMPoolState("create-in-progress");
+        public static IPAMPoolState CreateComplete { get; } = new IPAMPoolState("create-complete");
+        public static IPAMPoolState ModifyInProgress { get; } = new IPAMPoolState("modify-in-progress");
+        public static IPAMPoolState ModifyComplete { get; } = new IPAMPoolState("modify-complete");
+        public static IPAMPoolState DeleteInProgress { get; } = new IPAMPoolState("delete-in-progress");
+        public static IPAMPoolState DeleteComplete { get; } = new IPAMPoolState("delete-complete");
 
-        public static bool operator ==(HostRecovery left, HostRecovery right) => left.Equals(right);
-        public static bool operator !=(HostRecovery left, HostRecovery right) => !left.Equals(right);
+        public static bool operator ==(IPAMPoolState left, IPAMPoolState right) => left.Equals(right);
+        public static bool operator !=(IPAMPoolState left, IPAMPoolState right) => !left.Equals(right);
 
-        public static explicit operator string(HostRecovery value) => value._value;
+        public static explicit operator string(IPAMPoolState value) => value._value;
 
         [EditorBrowsable(EditorBrowsableState.Never)]
-        public override bool Equals(object? obj) => obj is HostRecovery other && Equals(other);
-        public bool Equals(HostRecovery other) => string.Equals(_value, other._value, StringComparison.Ordinal);
+        public override bool Equals(object? obj) => obj is IPAMPoolState other && Equals(other);
+        public bool Equals(IPAMPoolState other) => string.Equals(_value, other._value, StringComparison.Ordinal);
+
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override int GetHashCode() => _value?.GetHashCode() ?? 0;
+
+        public override string ToString() => _value;
+    }
+
+    /// <summary>
+    /// Determines whether this scope contains publicly routable space or space for a private network
+    /// </summary>
+    [EnumType]
+    public readonly struct IPAMScopeIpamScopeType : IEquatable<IPAMScopeIpamScopeType>
+    {
+        private readonly string _value;
+
+        private IPAMScopeIpamScopeType(string value)
+        {
+            _value = value ?? throw new ArgumentNullException(nameof(value));
+        }
+
+        public static IPAMScopeIpamScopeType Public { get; } = new IPAMScopeIpamScopeType("public");
+        public static IPAMScopeIpamScopeType Private { get; } = new IPAMScopeIpamScopeType("private");
+
+        public static bool operator ==(IPAMScopeIpamScopeType left, IPAMScopeIpamScopeType right) => left.Equals(right);
+        public static bool operator !=(IPAMScopeIpamScopeType left, IPAMScopeIpamScopeType right) => !left.Equals(right);
+
+        public static explicit operator string(IPAMScopeIpamScopeType value) => value._value;
+
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override bool Equals(object? obj) => obj is IPAMScopeIpamScopeType other && Equals(other);
+        public bool Equals(IPAMScopeIpamScopeType other) => string.Equals(_value, other._value, StringComparison.Ordinal);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override int GetHashCode() => _value?.GetHashCode() ?? 0;
@@ -1439,35 +1502,6 @@ namespace Pulumi.AwsNative.EC2
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object? obj) => obj is SpotFleetTagSpecificationResourceType other && Equals(other);
         public bool Equals(SpotFleetTagSpecificationResourceType other) => string.Equals(_value, other._value, StringComparison.Ordinal);
-
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override int GetHashCode() => _value?.GetHashCode() ?? 0;
-
-        public override string ToString() => _value;
-    }
-
-    [EnumType]
-    public readonly struct VPCEndpointVpcEndpointType : IEquatable<VPCEndpointVpcEndpointType>
-    {
-        private readonly string _value;
-
-        private VPCEndpointVpcEndpointType(string value)
-        {
-            _value = value ?? throw new ArgumentNullException(nameof(value));
-        }
-
-        public static VPCEndpointVpcEndpointType Interface { get; } = new VPCEndpointVpcEndpointType("Interface");
-        public static VPCEndpointVpcEndpointType Gateway { get; } = new VPCEndpointVpcEndpointType("Gateway");
-        public static VPCEndpointVpcEndpointType GatewayLoadBalancer { get; } = new VPCEndpointVpcEndpointType("GatewayLoadBalancer");
-
-        public static bool operator ==(VPCEndpointVpcEndpointType left, VPCEndpointVpcEndpointType right) => left.Equals(right);
-        public static bool operator !=(VPCEndpointVpcEndpointType left, VPCEndpointVpcEndpointType right) => !left.Equals(right);
-
-        public static explicit operator string(VPCEndpointVpcEndpointType value) => value._value;
-
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override bool Equals(object? obj) => obj is VPCEndpointVpcEndpointType other && Equals(other);
-        public bool Equals(VPCEndpointVpcEndpointType other) => string.Equals(_value, other._value, StringComparison.Ordinal);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override int GetHashCode() => _value?.GetHashCode() ?? 0;
