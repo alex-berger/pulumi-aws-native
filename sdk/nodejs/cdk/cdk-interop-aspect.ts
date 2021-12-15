@@ -3,8 +3,7 @@ import * as pulumi from "@pulumi/pulumi";
 import { CdkResource, normalize, firstToLower } from "./cdk-interop";
 import { Stack, CfnElement, Aspects, Token } from "aws-cdk-lib";
 import { Construct, ConstructOrder, Node, IConstruct } from "constructs";
-import { ecs, iam } from '@pulumi/aws-native';
-import { ResourceType } from 'aws-cdk-lib/lib/aws-config';
+import { ecs, iam } from '../';
 import { debug } from '@pulumi/pulumi/log';
 
 export class CdkStackComponent extends pulumi.ComponentResource {
@@ -53,7 +52,7 @@ class PulumiCDKBridge extends Construct {
 
   convert() {
     for (const r of this.host.node.findAll(ConstructOrder.POSTORDER)) {
-      if (r instanceof CfnElement) {
+      if (CfnElement.isCfnElement(r)) {
         const cfn = this.host.resolve(
           (r as any)._toCloudFormation()
         ) as CloudFormationTemplate;
@@ -75,6 +74,7 @@ class PulumiCDKBridge extends Construct {
               break;
             case "AWS::IAM::Role":
               debug("Creating IAM Role");
+              // We need this because IAM Role's CFN json format has the following field in uppercase.
               const morphed: any = {};
               Object.entries(props).forEach(([k, v]) => {
                 if (k == "AssumeRolePolicyDocument") {
@@ -200,7 +200,7 @@ class PulumiCDKBridge extends Construct {
         continue;
       }
 
-      if (c instanceof CfnElement) {
+      if (CfnElement.isCfnElement(c)) {
         const resolved = this.host.resolve((c as CfnElement).logicalId);
         if (resolved == logicalId) {
           return c;
@@ -220,7 +220,7 @@ class PulumiCDKBridge extends Construct {
   private resolveAtt(logicalId: string, attribute: string) {
     const child = this.lookup(logicalId, new Set<IConstruct>());
     debug(`resolving ref for ${logicalId}: ${child}`);
-    if (!(child instanceof CfnElement)) {
+    if (!(CfnElement.isCfnElement(child))) {
       throw new Error(
         `unable to resolve a "Ref" to a resource with the logical ID ${logicalId}: ${typeof child}`
       );

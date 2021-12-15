@@ -19,6 +19,8 @@
         "@types/glob": "^5.0.35",
         "@types/node-fetch": "^2.1.4",
         "@types/tmp": "^0.0.33",
+        "aws-cdk-lib": "2.0.0-rc.17",
+        "constructs": "10.0.5",
         "glob": "^7.1.2",
         "node-fetch": "^2.3.0",
         "shell-quote": "^1.6.1",
@@ -29,6 +31,10 @@
         "@types/shell-quote": "^1.6.0",
         "mocha": "^5.2.0",
         "typescript": "^4.3.5"
+    },
+    "resolutions": {
+        "aws-cdk-lib": "2.0.0-rc.17",
+        "constructs": "10.0.5"
     },
     "pulumi": {
         "resource": true

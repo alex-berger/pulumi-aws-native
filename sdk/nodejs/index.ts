@@ -47,6 +47,7 @@ import * as backup from "./backup";
 import * as batch from "./batch";
 import * as budgets from "./budgets";
 import * as cassandra from "./cassandra";
+import * as cdk from "./cdk";
 import * as ce from "./ce";
 import * as certificatemanager from "./certificatemanager";
 import * as chatbot from "./chatbot";
@@ -232,6 +233,7 @@ export {
     batch,
     budgets,
     cassandra,
+    cdk,
     ce,
     certificatemanager,
     chatbot,

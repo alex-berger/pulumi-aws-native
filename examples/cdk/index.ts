@@ -10,7 +10,7 @@ import * as ecs from 'aws-cdk-lib/lib/aws-ecs';
 import * as iam from 'aws-cdk-lib/lib/aws-iam';
 import * as elasticloadbalancingv2 from 'aws-cdk-lib/lib/aws-elasticloadbalancingv2';
 import * as pulumi from "@pulumi/pulumi";
-import { CdkStackComponent, AwsPulumiAdapter } from "./cdk-interop-aspect";
+import { CdkStackComponent, AwsPulumiAdapter } from "@pulumi/aws-native/cdk/cdk-interop-aspect";
 import { Construct } from "constructs";
 import * as aws from "@pulumi/aws";
 
@@ -59,6 +59,7 @@ export const securityGroupId = group.id;
 
 pulumi.all([albArn, atgArn, subnetIds, securityGroupId]).apply(([albArn, atgArn, subnetIds, securityGroupId]) => {
     new CdkStackComponent("teststack", (scope: Construct, parent: pulumi.ComponentResource) => {
+        console.debug("In CDK code")
         const adapter = new AwsPulumiAdapter(scope, "adapter", parent);
 
         const cluster = new ecs.CfnCluster(adapter, "clusterstack");

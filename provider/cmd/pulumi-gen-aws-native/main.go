@@ -11,12 +11,14 @@ import (
 	"flag"
 	"fmt"
 	"io"
+	"io/fs"
 	"io/ioutil"
 	"net/http"
 	"os"
 	"path/filepath"
 	"sort"
 	"strings"
+	"embed"
 
 	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/service/cloudformation"
@@ -243,7 +245,7 @@ func generate(ppkg *pschema.Package, language string) (map[string][]byte, error)
 	extraFiles := map[string][]byte{}
 	switch language {
 	case "nodejs":
-		return nodejsgen.GeneratePackage(toolDescription, ppkg, extraFiles)
+		return nodejsgen.GeneratePackage(toolDescription, ppkg, getCDKOverlays())
 	case "python":
 		return pythongen.GeneratePackage(toolDescription, ppkg, extraFiles)
 	case "go":
@@ -253,6 +255,31 @@ func generate(ppkg *pschema.Package, language string) (map[string][]byte, error)
 	}
 
 	return nil, errors.Errorf("unknown language '%s'", language)
+}
+
+//go:embed overlays/cdk/*
+var cdkOverlays embed.FS
+
+func getCDKOverlays() map[string][]byte {
+	content := map[string][]byte{}
+
+	contract.AssertNoError(fs.WalkDir(cdkOverlays, ".", func(path string, d fs.DirEntry, err error) error {
+		if d.IsDir() {
+			return nil
+		}
+
+		f, err := cdkOverlays.ReadFile(filepath.Join(path))
+		if err != nil {
+			return err
+		}
+		name := d.Name()
+		p := filepath.Join("cdk", name)
+		content[p] = f
+		fmt.Printf("Generating overlay in %q", p)
+		return nil
+	}))
+
+	return content
 }
 
 // emitPackage emits an entire package pack into the configured output directory with the configured settings.

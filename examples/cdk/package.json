@@ -11,6 +11,7 @@
         "constructs": "10.0.5"
     },
     "resolutions": {
-        "constructs": "10.0.5"
+        "constructs": "10.0.5",
+        "aws-cdk-lib": "2.0.0-rc.17"
     }
 }

@@ -381,6 +381,12 @@ func GatherPackage(supportedResourceTypes []string, jsonSchemas []jsschema.Schem
 			"@types/glob":       "^5.0.35",
 			"node-fetch":        "^2.3.0",
 			"@types/node-fetch": "^2.1.4",
+			"aws-cdk-lib":       "2.0.0-rc.17",
+			"constructs":        "10.0.5",
+		},
+		"resolutions": map[string]string{
+			"constructs": "10.0.5",
+			"aws-cdk-lib": "2.0.0-rc.17",
 		},
 		"devDependencies": map[string]string{
 			"mocha":              "^5.2.0",
