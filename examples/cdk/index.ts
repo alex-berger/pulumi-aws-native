@@ -1,11 +1,3 @@
-// A basic example of deploying a CDK resource from Pulumi.
-// Note that we don't flow any inputs/outputs.
-// new CdkComponent("helloworld", stack => {
-//     new cassandra.CfnKeyspace(stack, "keyspace", {keyspaceName: "keyspacetest", tags: [{key:"blah", value: "true"}]});
-// });
-
-// The full program isn't that nice because we need to figure out a way to create
-// dependencies across CDK resources and Pulumi components.
 import * as ecs from 'aws-cdk-lib/lib/aws-ecs';
 import * as iam from 'aws-cdk-lib/lib/aws-iam';
 import * as elasticloadbalancingv2 from 'aws-cdk-lib/lib/aws-elasticloadbalancingv2';
@@ -58,8 +50,7 @@ export const subnetIds = defaultVpcSubnets.ids;
 export const securityGroupId = group.id;
 
 pulumi.all([albArn, atgArn, subnetIds, securityGroupId]).apply(([albArn, atgArn, subnetIds, securityGroupId]) => {
-    new CdkStackComponent("teststack", (scope: Construct, parent: pulumi.ComponentResource) => {
-        console.debug("In CDK code")
+    new CdkStackComponent("teststack", (scope: Construct, parent: CdkStackComponent) => {
         const adapter = new AwsPulumiAdapter(scope, "adapter", parent);
 
         const cluster = new ecs.CfnCluster(adapter, "clusterstack");

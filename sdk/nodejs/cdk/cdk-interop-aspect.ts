@@ -3,21 +3,30 @@ import * as pulumi from "@pulumi/pulumi";
 import { CdkResource, normalize, firstToLower } from "./cdk-interop";
 import { Stack, CfnElement, Aspects, Token } from "aws-cdk-lib";
 import { Construct, ConstructOrder, Node, IConstruct } from "constructs";
-import { ecs, iam } from '../';
+import { ecs, iam, apprunner, lambda } from '../';
 import { debug } from '@pulumi/pulumi/log';
 
 export class CdkStackComponent extends pulumi.ComponentResource {
-  constructor(name: string, args: (scope: Construct, parent: pulumi.ComponentResource) => cdk.Stack, opts?: pulumi.CustomResourceOptions) {
+  outputs!: { [outputId: string]: pulumi.Output<any> };
+
+  constructor(name: string, args: (scope: Construct, parent: CdkStackComponent) => cdk.Stack, opts?: pulumi.CustomResourceOptions) {
     super("aws-native:cdk:StackComponent", name, args, opts);
+    this.outputs = {};
     const app = new cdk.App();
     const stack = args(app, this);
     app.synth();
+    this.registerOutputs(this.outputs);
+  }
+
+  /** @internal */
+  registerOutput(outputId: string, output: any) {
+    this.outputs[outputId] = pulumi.output(output);
   }
 }
 
 
 export class AwsPulumiAdapter extends Stack {
-  constructor(scope: Construct, id: string, readonly parent: pulumi.ComponentResource) {
+  constructor(scope: Construct, id: string, readonly parent: CdkStackComponent) {
     super(undefined, id);
 
     const host = new PulumiCDKBridge(scope, id, this);
@@ -30,6 +39,11 @@ export class AwsPulumiAdapter extends Stack {
       },
     });
   }
+
+  public remapCloudControlResource(logicalId: string, typeName: string, props: any): { [key: string]: pulumi.CustomResource } {
+    return {};
+  }
+
 }
 
 export type Mapping<T extends pulumi.CustomResource> = {
@@ -38,7 +52,6 @@ export type Mapping<T extends pulumi.CustomResource> = {
 };
 
 class PulumiCDKBridge extends Construct {
-  // resources!: { [key: string]: pulumi.CustomResource };
   resources!: { [key: string]: Mapping<pulumi.CustomResource> };
 
   constructor(
@@ -61,16 +74,35 @@ class PulumiCDKBridge extends Construct {
           debug(`Creating resource for ${logical}:\n${JSON.stringify(cfn)}`);
           let props = this.processIntrinsics(value.Properties);
           const normProps = normalize(props);
+          const res = this.host.remapCloudControlResource(logical, typeName, normProps);
+          if (Object.keys(res).length > 0) {
+            let m: { [key: string]: Mapping<pulumi.CustomResource> } = {};
+            for (const [k, r] of Object.entries(res) ?? []) {
+              m[k] = { resource: r, resourceType: typeName };
+            }
+            this.resources = { ...m, ...this.resources };
+            continue;
+          }
           switch (typeName) {
             case "AWS::ECS::Cluster":
               debug("Creating ECS Cluster resource");
               const c = new ecs.Cluster(logical, normProps, { parent: this.host.parent });
-              this.resources[logical] = {resource: c, resourceType: typeName};
+              this.resources[logical] = { resource: c, resourceType: typeName };
               break;
             case "AWS::ECS::TaskDefinition":
               debug("Creating ECS task definition");
-              const t = new ecs.TaskDefinition(logical, normProps, {parent: this.host.parent });
-              this.resources[logical] = {resource: t, resourceType: typeName}
+              const t = new ecs.TaskDefinition(logical, normProps, { parent: this.host.parent });
+              this.resources[logical] = { resource: t, resourceType: typeName }
+              break;
+            case "AWS::AppRunner::Service":
+              const s = new apprunner.Service(logical, normProps, { parent: this.host.parent });
+              this.resources[logical] = { resource: s, resourceType: typeName }
+              break;
+            case "AWS::Lambda::Function":
+              debug(`lambda: ${JSON.stringify(normProps)}`);
+              debug(`Keys in function ${normProps["role"] != undefined}`);
+              const l = new lambda.Function(logical, normProps, { parent: this.host.parent });
+              this.resources[logical] = { resource: l, resourceType: typeName }
               break;
             case "AWS::IAM::Role":
               debug("Creating IAM Role");
@@ -83,13 +115,13 @@ class PulumiCDKBridge extends Construct {
                   morphed[k] = v;
                 }
               });
-              const r = new iam.Role(logical, morphed, {parent: this.host.parent});
-              this.resources[logical] = {resource: r, resourceType: typeName};
+              const r = new iam.Role(logical, morphed, { parent: this.host.parent });
+              this.resources[logical] = { resource: r, resourceType: typeName };
               break;
             default:
-              debug(`Creating fallthrough CdkResource for ${logical}`);
+              debug(`Creating fallthrough CdkResource for type: ${typeName} - ${logical}`);
               const f = new CdkResource(logical, typeName, normProps, { parent: this.host.parent });
-              this.resources[logical] = {resource: f, resourceType: typeName};
+              this.resources[logical] = { resource: f, resourceType: typeName };
           }
           debug(`Done creating resource for ${logical}`)
         }
@@ -98,14 +130,16 @@ class PulumiCDKBridge extends Construct {
         )) {
           // Do something with the condition
         }
+        // Register the outputs as outputs of the component resource.
         for (const [outputId, args] of Object.entries(cfn.Outputs || {})) {
-          // Do something with the outputs
+          this.host.parent.registerOutput(outputId, this.processIntrinsics(args.Value))
         }
       }
     }
   }
 
   private processIntrinsics(obj: any): any {
+    debug(`Processing intrinsics for ${JSON.stringify(obj)}`);
     if (typeof obj === "string") {
       if (Token.isUnresolved(obj)) {
         debug(`Unresolved: ${JSON.stringify(obj)}`);
@@ -153,7 +187,9 @@ class PulumiCDKBridge extends Construct {
 
       case "Fn::Join": {
         const [delim, strings] = params;
-        return this.processIntrinsics(delim) + this.processIntrinsics(strings);
+        const joined = (this.processIntrinsics(strings) as Array<string>).join(this.processIntrinsics(delim));
+        debug(`Fn::Join result: ${joined}`);
+        return joined;
       }
 
       case "Fn::Transform": {
@@ -180,6 +216,10 @@ class PulumiCDKBridge extends Construct {
   }
 
   private resolveRef(ref: string) {
+    switch (ref) {
+      case "AWS::Partition":
+        return "aws"; // TODO support this through an invoke?
+    }
     if (ref?.startsWith("AWS::")) {
       throw new Error(`don't support pseudo parameters ${ref}`);
     }
@@ -242,7 +282,7 @@ class PulumiCDKBridge extends Construct {
           return d.value;
           // throw new Error(`Type of ${attribute} in resource ${logicalId} is ${typeof d.value}`)
         } else {
-          debug(`No resource found for ${resolvedId} - current resources: ${this.resources.keys}`)
+          throw new Error(`No resource found for ${resolvedId} - current resources: ${this.resources.keys}`);
         }
         continue
       }
